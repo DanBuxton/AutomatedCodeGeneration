@@ -8,28 +8,27 @@ namespace AutomatedCodeGeneration.Library.Models
 {
     public sealed class SystemGenerator
     {
-        public static async Task<Result> CreateSystem(dynamic systemInfo)
+        public static async Task<Result> CreateSystem(SystemInfo systemInfo)
         {
-            await Task.Run(() =>
-            {
-                //TODO: Generate the system
-            });
+            var systemBuilder = new Internal.SystemBuilder(systemInfo);
 
-            throw new NotImplementedException();
+            var err = await systemBuilder.CreateSystem();
+
+            return new Result(err?.Message ?? null);
         }
 
         public sealed record Result
         {
-            public bool HasError { get => Errors != null; }
+            public bool HasError => Error != null;
 
-            public string[] Errors { get; private init; } = null;
+            public string Error { get; private init; }
 
-            public Result(string[] errors)
+            public Result(string error)
             {
-                Errors = errors;
+                Error = error;
             }
 
-            public void Deconstruct(out string[] errorMsgs) => (errorMsgs) = (Errors);
+            public void Deconstruct(out string errorMessage) => (errorMessage) = (Error);
         }
     }
 }
