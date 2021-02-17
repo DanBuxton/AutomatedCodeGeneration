@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace AutomatedCodeGeneration.Library.Models
+namespace AutomatedCodeGeneration.Models
 {
     public sealed record SystemInfo
     {

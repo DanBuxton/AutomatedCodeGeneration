@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
-namespace AutomatedCodeGeneration.Library.Models
+namespace AutomatedCodeGeneration.Models
 {
     public sealed class SystemGenerator
     {
@@ -14,7 +10,7 @@ namespace AutomatedCodeGeneration.Library.Models
 
             var err = await systemBuilder.CreateSystem();
 
-            return new Result(err?.Message ?? null);
+            return new Result(err?.Message);
         }
 
         public sealed record Result

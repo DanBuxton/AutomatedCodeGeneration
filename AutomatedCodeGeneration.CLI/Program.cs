@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using AutomatedCodeGeneration.Library.Models;
+using AutomatedCodeGeneration.Models;
 using static System.Console;
 
 var systemId = Guid.Parse("aef3af89-f90a-4670-bcb0-ff7693325faa");
