@@ -27,7 +27,7 @@ jobs:
   merge-me:
     name: Merge me!
     needs:
-    - jobs
+    - build_test
 
     runs-on: ubuntu-latest
 
