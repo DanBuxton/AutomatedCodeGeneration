@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutomatedCodeGeneration.Library.Models
+namespace AutomatedCodeGeneration.Models
 {
     public static class Enums
     {

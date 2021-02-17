@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using AutomatedCodeGeneration.Models;
 
-namespace AutomatedCodeGeneration.Library.Models
+namespace AutomatedCodeGeneration.Models
 {
     public static class Helper
     {
