@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using AutomatedCodeGeneration.Library;
 
 namespace AutomatedCodeGeneration.Models
 {
@@ -6,18 +8,18 @@ namespace AutomatedCodeGeneration.Models
     {
         public static async Task<Result> CreateSystem(SystemInfo systemInfo)
         {
-            var systemBuilder = new Internal.SystemBuilder(systemInfo);
+            var systemBuilder = new SystemBuilder(systemInfo);
 
-            var err = await systemBuilder.CreateSystem();
+            var result = await systemBuilder.CreateSystem();
 
-            return new Result(err?.Message);
+            return new Result((result as InvalidOperationException)?.Message);
         }
 
         public sealed record Result
         {
             public bool HasError => Error != null;
 
-            public string Error { get; private init; }
+            public string Error { get; }
 
             public Result(string error)
             {
