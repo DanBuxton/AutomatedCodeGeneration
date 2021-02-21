@@ -1,30 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AutomatedCodeGeneration.Library.Data;
+using AutomatedCodeGeneration.Library.Data.Diagrams;
+using AutomatedCodeGeneration.Library.Data.Diagrams.ClassDiagram;
 
-namespace AutomatedCodeGeneration.Models.Internal
+namespace AutomatedCodeGeneration.Library
 {
-    internal class SystemBuilder
+    public sealed class SystemBuilder
     {
         private readonly Guid _id;
         private readonly string _language;
-        private readonly string output;
+        private readonly string _output;
 
         public SystemBuilder(SystemInfo systemInfo)
         {
-            (_id, _language, output) = systemInfo;
+            (_id, _language, _output) = systemInfo;
         }
 
-        public async Task<InvalidOperationException> CreateSystem()
+        public async Task<object> CreateSystem()
         {
             return await Task.Run(() =>
             {
                 try
                 {
-                    Thread.Sleep(10000);
+                    var model = new DataContext(null).Systems.Find(_id);
                 }
                 catch (Exception e)
                 {
