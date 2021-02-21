@@ -16,8 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AutomatedCodeGeneration.CLI\AutomatedCodeGeneration.CLI.csproj" />
-    <ProjectReference Include="..\AutomatedCodeGeneration\AutomatedCodeGeneration.csproj" />
+    <ProjectReference Include="..\AutomatedCodeGeneration.Library\AutomatedCodeGeneration.Library.csproj" />
   </ItemGroup>
 
 </Project>
