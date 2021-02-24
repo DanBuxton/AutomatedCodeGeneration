@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AutomatedCodeGeneration.Library\AutomatedCodeGeneration.Library.csproj" />
+    <ProjectReference Include="..\AutomatedCodeGeneration.DataLayer\AutomatedCodeGeneration.DataLayer.csproj" />
   </ItemGroup>
 
 </Project>
