@@ -4,7 +4,7 @@ using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
 
 namespace AutomatedCodeGeneration.DataLayer.Diagrams.Abstractions
 {
-    internal interface ISystemModel : INameSpace
+    internal interface ISystemModel : INamespace
     {
         Guid Id { get; set; }
         List<UseCaseModel> UseCases { get; set; }

@@ -8,6 +8,6 @@ namespace AutomatedCodeGeneration.DataLayer.Diagrams.Abstractions
         string Name { get; set; }
         List<ClassMethodModel> Methods { get; set; }
         List<ClassDataModel> Data { get; set; }
-        AccessModel Access { get; set; }
+        AccessType Access { get; set; }
     }
 }
