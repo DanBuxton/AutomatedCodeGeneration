@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutomatedCodeGeneration", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutomatedCodeGeneration.Tests", "AutomatedCodeGeneration.Tests\AutomatedCodeGeneration.Tests.csproj", "{F703DB6B-B4A5-41E1-95E9-B9DD3EFA7C52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomatedCodeGeneration.DataLayer", "AutomatedCodeGeneration.DataLayer\AutomatedCodeGeneration.DataLayer.csproj", "{84C37D51-1916-4421-85EB-7A47C6009A43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutomatedCodeGeneration.DataLayer", "AutomatedCodeGeneration.DataLayer\AutomatedCodeGeneration.DataLayer.csproj", "{84C37D51-1916-4421-85EB-7A47C6009A43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomatedCodeGeneration.DataLayer.Tests", "AutomatedCodeGeneration.DataLayer.Tests\AutomatedCodeGeneration.DataLayer.Tests.csproj", "{570719C3-0C47-4984-A77E-5822E6756D31}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{84C37D51-1916-4421-85EB-7A47C6009A43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84C37D51-1916-4421-85EB-7A47C6009A43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84C37D51-1916-4421-85EB-7A47C6009A43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{570719C3-0C47-4984-A77E-5822E6756D31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{570719C3-0C47-4984-A77E-5822E6756D31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{570719C3-0C47-4984-A77E-5822E6756D31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{570719C3-0C47-4984-A77E-5822E6756D31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
