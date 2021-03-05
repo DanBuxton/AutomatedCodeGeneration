@@ -8,7 +8,7 @@ namespace AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram
     {
         public Guid Id { get; set; }
         public virtual NameTypeModel NameType { get; init; }
-        public virtual AccessModel Access { get; init; }
+        public AccessType Access { get; init; }
         public virtual List<NameTypeModel> Params { get; init; } = new();
     }
 }

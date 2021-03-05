@@ -13,15 +13,14 @@ namespace AutomatedCodeGeneration.CLI
     {
         public static async Task Main(string[] args)
         {
-            var systemId = Guid.Parse("aef3af89-f90a-4670-bcb0-ff7693325faa");
-            var output = "";
-            var language = "";
-            var previousFlag = "";
+            //var systemId = Guid.Parse("aef3af89-f90a-4670-bcb0-ff7693325faa");
+            var systemId = Guid.Empty;
+            string output = null, language = null, previousFlag = null;
 #if DEBUG
             args = new[]
             {
                 "-id",
-                "aef3af89-f90a-4670-bcb0-ff7693325faa",
+                "89f323d1-8e74-4be6-ba5c-08d8dfe7e014",
                 "-path",
                 @"C:\Temp\ACG\",
                 "-lang",
@@ -92,13 +91,15 @@ namespace AutomatedCodeGeneration.CLI
                 GotError(errors.ToArray());
             }
 
-            var info = Helper.CreateSystemInfo(systemId, language);
+            var info = Helper.CreateSystemInfo(systemId, language, output ?? Directory.GetCurrentDirectory());
 
             var result = SystemGenerator.CreateSystem(info);
 
             do
             {
+#if RELEASE
                 Clear();
+#endif
 
                 await Task.Run(() =>
                 {
@@ -119,7 +120,9 @@ namespace AutomatedCodeGeneration.CLI
 
             } while (!result.IsCompleted);
 
-            Clear();
+#if RELEASE
+                Clear();
+#endif
 
             WriteLine($"Details:\n\tId:\t\t{info.Id}\n\tLanguage:\t{info.TargetLanguage}\n\tOutput:\t\t{info.Output}");
 
@@ -139,7 +142,7 @@ namespace AutomatedCodeGeneration.CLI
                 ForegroundColor = color;
             }
         }
-        static void GotError(params string[] errors)
+        private static void GotError(params string[] errors)
         {
             var color = ForegroundColor;
 

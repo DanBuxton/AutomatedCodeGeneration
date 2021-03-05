@@ -8,18 +8,6 @@ namespace AutomatedCodeGeneration.DataLayer.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AccessModel",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AccessModel", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ActorModel",
                 columns: table => new
                 {
@@ -36,6 +24,7 @@ namespace AutomatedCodeGeneration.DataLayer.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Namespace = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BeenGenerated = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -44,25 +33,20 @@ namespace AutomatedCodeGeneration.DataLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ClassModel",
+                name: "Classes",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SystemId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Namespace = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AccessId = table.Column<int>(type: "int", nullable: true)
+                    Access = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClassModel", x => x.Id);
+                    table.PrimaryKey("PK_Classes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ClassModel_AccessModel_AccessId",
-                        column: x => x.AccessId,
-                        principalTable: "AccessModel",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ClassModel_Systems_SystemId",
+                        name: "FK_Classes_Systems_SystemId",
                         column: x => x.SystemId,
                         principalTable: "Systems",
                         principalColumn: "Id",
@@ -115,22 +99,16 @@ namespace AutomatedCodeGeneration.DataLayer.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     NameTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    AccessId = table.Column<int>(type: "int", nullable: true),
+                    Access = table.Column<int>(type: "int", nullable: false),
                     ClassModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ClassDataModel", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ClassDataModel_AccessModel_AccessId",
-                        column: x => x.AccessId,
-                        principalTable: "AccessModel",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ClassDataModel_ClassModel_ClassModelId",
+                        name: "FK_ClassDataModel_Classes_ClassModelId",
                         column: x => x.ClassModelId,
-                        principalTable: "ClassModel",
+                        principalTable: "Classes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -141,22 +119,16 @@ namespace AutomatedCodeGeneration.DataLayer.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     NameTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    AccessId = table.Column<int>(type: "int", nullable: true),
+                    Access = table.Column<int>(type: "int", nullable: false),
                     ClassModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ClassMethodModel", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ClassMethodModel_AccessModel_AccessId",
-                        column: x => x.AccessId,
-                        principalTable: "AccessModel",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ClassMethodModel_ClassModel_ClassModelId",
+                        name: "FK_ClassMethodModel_Classes_ClassModelId",
                         column: x => x.ClassModelId,
-                        principalTable: "ClassModel",
+                        principalTable: "Classes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -168,6 +140,7 @@ namespace AutomatedCodeGeneration.DataLayer.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Namespace = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsStatic = table.Column<bool>(type: "bit", nullable: false),
                     ClassMethodModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
@@ -183,11 +156,6 @@ namespace AutomatedCodeGeneration.DataLayer.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClassDataModel_AccessId",
-                table: "ClassDataModel",
-                column: "AccessId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ClassDataModel_ClassModelId",
                 table: "ClassDataModel",
                 column: "ClassModelId");
@@ -198,9 +166,9 @@ namespace AutomatedCodeGeneration.DataLayer.Migrations
                 column: "NameTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClassMethodModel_AccessId",
-                table: "ClassMethodModel",
-                column: "AccessId");
+                name: "IX_Classes_SystemId",
+                table: "Classes",
+                column: "SystemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClassMethodModel_ClassModelId",
@@ -211,16 +179,6 @@ namespace AutomatedCodeGeneration.DataLayer.Migrations
                 name: "IX_ClassMethodModel_NameTypeId",
                 table: "ClassMethodModel",
                 column: "NameTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ClassModel_AccessId",
-                table: "ClassModel",
-                column: "AccessId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ClassModel_SystemId",
-                table: "ClassModel",
-                column: "SystemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NameTypeModel_ClassMethodModelId",
@@ -267,15 +225,7 @@ namespace AutomatedCodeGeneration.DataLayer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_ClassMethodModel_AccessModel_AccessId",
-                table: "ClassMethodModel");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_ClassModel_AccessModel_AccessId",
-                table: "ClassModel");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_ClassMethodModel_ClassModel_ClassModelId",
+                name: "FK_ClassMethodModel_Classes_ClassModelId",
                 table: "ClassMethodModel");
 
             migrationBuilder.DropForeignKey(
@@ -292,10 +242,7 @@ namespace AutomatedCodeGeneration.DataLayer.Migrations
                 name: "ActorModel");
 
             migrationBuilder.DropTable(
-                name: "AccessModel");
-
-            migrationBuilder.DropTable(
-                name: "ClassModel");
+                name: "Classes");
 
             migrationBuilder.DropTable(
                 name: "Systems");

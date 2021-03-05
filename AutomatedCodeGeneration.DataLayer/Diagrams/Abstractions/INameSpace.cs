@@ -1,7 +1,7 @@
 ﻿namespace AutomatedCodeGeneration.DataLayer.Diagrams.Abstractions
 {
-    internal interface INameSpace
+    internal interface INamespace
     {
-        internal string NameSpace { get; init; }
+        string Namespace { get; init; }
     }
 }

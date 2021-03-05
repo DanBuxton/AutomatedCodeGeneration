@@ -3,6 +3,6 @@
     internal interface IClassData
     {
         NameTypeModel NameType { get; init; }
-        AccessModel Access { get; init; }
+        AccessType Access { get; init; }
     }
 }

@@ -5,7 +5,7 @@ namespace AutomatedCodeGeneration.DataLayer.Diagrams.Abstractions
     internal interface IClassMethod
     {
         NameTypeModel NameType { get; init; }
-        AccessModel Access { get; init; }
+        AccessType Access { get; init; }
         List<NameTypeModel> Params { get; init; }
     }
 }
