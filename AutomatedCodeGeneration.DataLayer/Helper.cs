@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AutomatedCodeGeneration.DataLayer.Diagrams;
+using AutomatedCodeGeneration.DataLayer.Managers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -14,5 +16,31 @@ namespace AutomatedCodeGeneration.DataLayer
                 AccessType.ProtectedInternal => "protected internal",
                 _ => throw new ArgumentOutOfRangeException()
             };
+
+        private static IEnumerable<Type> GetTypes(string ns) =>
+            typeof(Helper).GetTypeInfo().Assembly.GetTypes()
+            .Where(t => string.Equals(t.Namespace, ns, StringComparison.Ordinal));
+        private static IEnumerable<Type> GetLanguageManagers() =>
+            GetTypes("AutomatedCodeGeneration.DataLayer.Managers");
+
+        public static LanguageManager GetLanguageManager(string language, SystemModel system)
+        {
+            LanguageManager manager = null;
+            var type = GetLanguageManagers()
+                .FirstOrDefault(t => t.Name.ToLower()
+                .Equals($"{language.ToLower()}manager")); //2ms
+
+            if (type is not null)
+            {
+                manager = Activator
+                    .CreateInstance(type,
+                    new object[]
+                    {
+                        system
+                    }) as LanguageManager; //0-1ms
+            }
+
+            return manager;
+        }
     }
 }

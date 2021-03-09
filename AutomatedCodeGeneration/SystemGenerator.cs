@@ -8,9 +8,20 @@ namespace AutomatedCodeGeneration
     {
         public static async Task<Result> CreateSystem(SystemInfo systemInfo)
         {
+#if DEBUG
+            System.Diagnostics.Stopwatch sw = new();
+            sw.Start();
+#endif
+
             var systemBuilder = new SystemBuilder(systemInfo);
 
             var result = await systemBuilder.CreateSystem();
+
+#if DEBUG
+            sw.Stop();
+
+            Console.WriteLine($"Completed in: {sw.Elapsed.TotalMilliseconds}ms");
+#endif
 
             return new Result((result as InvalidOperationException)?.Message);
         }

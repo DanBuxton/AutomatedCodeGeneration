@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AutomatedCodeGeneration.DataLayer.Files.Builders
 {
-    public class CSharpFileBuilder : IBuilder
+    public class CSharpFileBuilder : IFileModelBuilder
     {
         private readonly CSharpFileModel _model;
         public FileModel ModelType { get; }
@@ -14,16 +15,16 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Builders
             ModelType = _model;
         }
 
-        public CSharpFileBuilder WithImports(List<string> imports)
+        public CSharpFileBuilder WithImports(IEnumerable<string> imports)
         {
-            _model.Imports = imports;
+            _model.Imports = imports.ToList();
 
             return this;
         }
 
-        public CSharpFileBuilder WithNamespace(string @namespace)
+        public CSharpFileBuilder WithNamespace(string ns)
         {
-            _model.Namespace = @namespace;
+            _model.Namespace = ns;
 
             return this;
         }
@@ -63,9 +64,9 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Builders
             return this;
         }
 
-        public string Build()
+        public FileModel Build()
         {
-            return _model.ToString();
+            return _model;
         }
     }
 }
