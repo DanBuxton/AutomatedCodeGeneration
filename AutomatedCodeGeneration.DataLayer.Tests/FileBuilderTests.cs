@@ -24,7 +24,7 @@ namespace AutomatedCodeGeneration.DataLayer.Tests
                 .WithImports(new List<string> {"System"})
                 .WithNamespace("ACG").WithClassName("Test")
                 .WithClassAccess(AccessType.Public)
-                .Build();
+                .Build().ToString();
 
             var expected = $"using System;{newLine}{newLine}namespace ACG{newLine}{{{newLine}{indent}public class Test{newLine}" +
                            $"{indent}{{{newLine}{indent}{indent}{newLine}{indent}}}{newLine}}}";
