@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AutomatedCodeGeneration.DataLayer.Files
 {
@@ -13,7 +10,9 @@ namespace AutomatedCodeGeneration.DataLayer.Files
         public char? LineDelimiter { get; protected set; } = ';';
 
         public List<string> Imports { get; protected internal set; } = new();
-        
+
+        public string ClassName { get; set; }
+
         protected void IndentStringBuilder(StringBuilder builder, int n)
         {
             for (var i = 0; i < n; i++)

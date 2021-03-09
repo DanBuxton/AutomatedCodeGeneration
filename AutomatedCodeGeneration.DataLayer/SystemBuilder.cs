@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutomatedCodeGeneration.DataLayer.Data;
-using AutomatedCodeGeneration.DataLayer.Files.Builders;
+using AutomatedCodeGeneration.DataLayer.Managers;
 
 namespace AutomatedCodeGeneration.DataLayer
 {
-    public sealed class SystemBuilder// : DbManager
+    public sealed class SystemBuilder
     {
         private readonly Guid _id;
         private readonly string _language;
@@ -21,76 +20,39 @@ namespace AutomatedCodeGeneration.DataLayer
 
         public async Task<object> CreateSystem()
         {
-            return await Task.Run(() =>
+            return await Task.Run(async () =>
             {
                 try
                 {
                     var db = new DataContext();
-                    //var system = new SystemModel { Namespace = "ACG" };
-                    //db.Systems.Add(system);
-                    //db.SaveChanges();
 
-                    //List<ClassModel> classes = new()
-                    //{
-                    //    new ClassModel
-                    //    {
-                    //        Access = AccessType.Public,
-                    //        Name = "TestClass",
-                    //        System = system,
-                    //        Namespace = "ACG.BO"
-                    //    }
-                    //};
-                    //db.Classes.AddRange(classes);
-                    //db.SaveChanges();
+                    //PopulateDB(db);
 
-                    //system.Classes = classes;
-                    //db.Systems.Update(system);
-                    //db.SaveChanges();
+                    var system = await db.Systems.FindAsync(_id);
 
-                    var system = db.Systems.Find(_id);
-                    system.Classes = db.Classes.ToList();
-                    db.SaveChanges();
+                    //TODO: Sort this - URGENT
+                    system.Classes.AddRange(db.Classes.Where(c=>c.System.Id == system.Id).ToList());
 
-                    system = db.Systems.Find(_id);
+                    //system = db.Systems.Find(_id);
 
-                    //TODO: Create file models and language managers
-                    var result = new string[system.Classes.Count];
+                    //TODO: Create language managers
+                    var mgr = Helper.GetLanguageManager(_language, system);
 
-                    for (var i = 0; i < result.Length; i++)
-                    {
-                        var c = system.Classes.ElementAt(i);
+                    if (mgr != null)
+                    { 
+                        mgr.GenerateFiles();
 
-                        CSharpFileBuilder builder = new();
-                        builder.WithImports(new List<string> {"System", "System.Collections.Generic"});
-                        builder.WithNamespace(c.Namespace);
-                        builder.WithClassAccess(c.Access);
-                        builder.WithClassName(c.Name);
-
-                        result[i] = builder.Build();
-
-                        var path = $"{_output}\\{c.Name}.cs";
-
-                        if (File.Exists(path)) continue;
-
-                        File.AppendAllText(path, result[i]);
-
-                        Console.WriteLine($"\"{result[i]}\"");
+                        await mgr.OutputFiles(_output);
                     }
-
-                    //foreach (var c in system.Classes)
-                    //{
-                    //    IBuilder builder = new CSharpFileBuilder("    ")
-                    //        .WithImports(new List<string> {"System", "System.Collections.Generic"})
-                    //        .WithNamespace(system.Namespace)
-                    //        .WithClassAccess(c.Access.ToString())
-                    //        .WithClassName(c.Name);
-
-                    //    result += $"\n\n{builder.Build()}\n\n---------------------------";
-                    //}
+#if DEBUG
+                    Console.WriteLine($"Language manager: {mgr?.GetType().Name}");
+#endif
                 }
                 catch (Exception e)
                 {
+#if DEBUG
                     Console.WriteLine($"\n{e.Message}:\n{e.StackTrace}");
+#endif
 
                     return new InvalidOperationException("Sorry, there was an error generating your code!", e);
                 }

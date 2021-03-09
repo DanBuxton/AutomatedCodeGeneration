@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace AutomatedCodeGeneration.DataLayer.Files
@@ -10,7 +9,6 @@ namespace AutomatedCodeGeneration.DataLayer.Files
 
         public List<string> ClassAttributes { get; set; } = new();
         public string ClassAccess { get; set; }
-        public string ClassName { get; set; }
         
         public List<string> FieldsAndProperties { get; set; } = new();
         public List<string> Constructors { get; set; } = new();
