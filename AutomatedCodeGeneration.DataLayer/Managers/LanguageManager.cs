@@ -25,7 +25,7 @@ namespace AutomatedCodeGeneration.DataLayer.Managers
 
         protected internal bool UploadToGitHub(string token)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public abstract void GenerateFiles();
