@@ -1,23 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
+using AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp;
 
 namespace AutomatedCodeGeneration.DataLayer.Files.Builders
 {
     public class CSharpFileBuilder : IFileModelBuilder
     {
-        private readonly CSharpFileModel _model;
+        private readonly CSharpClassFileModel _model;
         public FileModel ModelType { get; }
 
         public CSharpFileBuilder(string indent = "\t", string newLine = "\n")
         {
-            _model = new CSharpFileModel(indent, newLine);
+            _model = new CSharpClassFileModel(indent, newLine);
             ModelType = _model;
         }
 
         public CSharpFileBuilder WithImports(IEnumerable<string> imports)
         {
             _model.Imports = imports.ToList();
+
+            if (!_model.Imports.Contains("System"))
+                _model.Imports.Insert(0, "System");
 
             return this;
         }
@@ -50,16 +54,23 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Builders
             return this;
         }
 
-        public CSharpFileBuilder WithFieldsAndProperties(List<string> fieldsAndProperties)
+        public CSharpFileBuilder WithFieldsAndProperties(List<ClassDataModel> fieldsAndProperties)
         {
             _model.FieldsAndProperties = fieldsAndProperties;
 
             return this;
         }
 
-        public CSharpFileBuilder WithConstructors(List<string> constructors)
+        public CSharpFileBuilder WithConstructors(List<ClassMethodModel> constructors)
         {
             _model.Constructors = constructors;
+
+            return this;
+        }
+
+        public CSharpFileBuilder WithMethods(List<ClassMethodModel> methods)
+        {
+            _model.Methods = methods;
 
             return this;
         }

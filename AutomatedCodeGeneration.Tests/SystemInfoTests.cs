@@ -2,11 +2,19 @@
 using System.IO;
 using AutomatedCodeGeneration.DataLayer;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace AutomatedCodeGeneration.Tests
 {
     public class SystemInfoTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public SystemInfoTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         [Fact]
         public void Id_Get_Test()
         {

@@ -2,11 +2,19 @@
 using System.IO;
 using AutomatedCodeGeneration.DataLayer.Files;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace AutomatedCodeGeneration.DataLayer.Tests
 {
     public class FileModelTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public FileModelTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         [Fact]
         public void Id_Get_Test()
         {

@@ -1,24 +1,23 @@
-﻿using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
+using AutomatedCodeGeneration.DataLayer.Files.Abstractions;
 
 namespace AutomatedCodeGeneration.DataLayer.Files
 {
-    public class FileModel
+    public abstract class FileModel : IFileModel
     {
         public string Indent { get; protected set; }
         public string NewLine { get; protected set; }
         public char? LineDelimiter { get; protected set; } = ';';
+        public string FileName { get; protected set; }
 
-        public List<string> Imports { get; protected internal set; } = new();
-
-        public string ClassName { get; set; }
-
-        protected void IndentStringBuilder(StringBuilder builder, int n)
+        public void IndentStringBuilder(StringBuilder value, int noOfTimes)
         {
-            for (var i = 0; i < n; i++)
+            for (var i = 0; i < noOfTimes; i++)
             {
-                builder.Append(Indent);
+                value.Append(Indent);
             }
         }
+
+        public abstract StringBuilder Generate();
     }
 }
