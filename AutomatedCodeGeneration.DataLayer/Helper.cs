@@ -9,6 +9,8 @@ namespace AutomatedCodeGeneration.DataLayer
 {
     public static class Helper
     {
+        public static Enums.Languages? GetLanguage(string lang) => Enum.TryParse(lang, true, out Enums.Languages l) ? l : null;
+
         public static string ToString(AccessType access) =>
             access switch
             {
@@ -32,12 +34,7 @@ namespace AutomatedCodeGeneration.DataLayer
 
             if (type is not null)
             {
-                manager = Activator
-                    .CreateInstance(type,
-                    new object[]
-                    {
-                        system
-                    }) as LanguageManager; //0-1ms
+                manager = Activator.CreateInstance(type, system) as LanguageManager; //0-1ms
             }
 
             return manager;

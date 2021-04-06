@@ -1,4 +1,4 @@
-﻿namespace AutomatedCodeGeneration.Models
+﻿namespace AutomatedCodeGeneration.DataLayer
 {
     public static class Enums
     {
@@ -6,7 +6,7 @@
         {
             //JavaScript = 0,
             CSharp = 1,
-            //Java = 2,
+            Java = 2
             //Python = 3
         }
     }

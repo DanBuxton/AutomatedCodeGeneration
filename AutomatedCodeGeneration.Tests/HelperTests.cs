@@ -2,11 +2,19 @@
 using System.IO;
 using AutomatedCodeGeneration.Models;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace AutomatedCodeGeneration.Tests
 {
     public class HelperTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public HelperTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         [Theory]
         [InlineData("CSharp")]
         [InlineData("CSharP")]
@@ -22,6 +30,7 @@ namespace AutomatedCodeGeneration.Tests
 
         [Theory]
         [InlineData("ThisLanguageDoesNotExist")]
+        [InlineData("brainfuck")]
         [InlineData(null)]
         public void Language_Not_Exist_Test(string lang)
         {

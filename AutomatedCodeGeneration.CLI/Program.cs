@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using AutomatedCodeGeneration.Models;
-using Microsoft.Extensions.Configuration;
+using AutomatedCodeGeneration.DataLayer;
 using static System.Console;
+using static AutomatedCodeGeneration.Models.Helper;
 
 namespace AutomatedCodeGeneration.CLI
 {
@@ -13,92 +13,14 @@ namespace AutomatedCodeGeneration.CLI
     {
         public static async Task Main(string[] args)
         {
-            //var systemId = Guid.Parse("aef3af89-f90a-4670-bcb0-ff7693325faa");
-            var systemId = Guid.Empty;
-            string output = null, language = null, previousFlag = null;
-#if DEBUG
-            args = new[]
-            {
-                "-id",
-                "89f323d1-8e74-4be6-ba5c-08d8dfe7e014",
-                "-path",
-                @"C:\Temp\ACG\",
-                "-lang",
-                "cSharp"
-            };
-#endif
-
-            var errors = new List<string>();
-
-            foreach (var a in args)
-            {
-                if (a.StartsWith('-'))
-                {
-                    previousFlag = a.ToLower();
-                }
-                else
-                {
-                    var arg = a.ToLower();
-
-                    switch (previousFlag.ToLower()) // Search for flags
-                    {
-                        case "-outpath":
-                        case "-output":
-                        case "-outdir":
-                        case "-result":
-                        case "-path":
-                            var path = a.Replace('-', ' ');
-                            if (Directory.Exists(path) || a.ToLower().StartsWith("github"))
-                            {
-                                output = path;
-                            }
-                            else
-                            {
-                                errors.Add($"Invalid path: {path}");
-                            }
-                            break;
-                        case "-systemid":
-                        case "-system":
-                        case "-id":
-                            if (!Guid.TryParse(arg, out systemId))
-                            {
-                                errors.Add($"Invalid id: {a}");
-                            }
-                            break;
-                        case "-language":
-                        case "-lang":
-                            var l = Helper.LanguageExists(arg);
-                            if (l.HasValue)
-                            {
-                                language = arg;
-                            }
-                            else
-                            {
-                                errors.Add($"Invalid language: {a}");
-                            }
-                            break;
-                        default:
-                            errors.Add($"Invalid flag: '{previousFlag}'");
-                            break;
-                    }
-
-                    previousFlag = "";
-                }
-            }
-
-            if (errors.Count > 0)
-            {
-                GotError(errors.ToArray());
-            }
-
-            var info = Helper.CreateSystemInfo(systemId, language, output ?? Directory.GetCurrentDirectory());
+            var info = GetInfoFromArgs(args);
 
             var result = SystemGenerator.CreateSystem(info);
 
             do
             {
 #if RELEASE
-                Clear();
+                Console.Clear();
 #endif
 
                 await Task.Run(() =>
@@ -109,9 +31,24 @@ namespace AutomatedCodeGeneration.CLI
                     WriteLine("Your system is being created");
 
                     Write("\nPlease wait");
-                    for (int i = 0; i < 3 && !result.IsCompleted; i++)
+                    for (var i = 0; i < 3 && !result.IsCompleted; i++)
                     {
                         Thread.Sleep(1000);
+
+                        switch (result.Status)
+                        {
+                            case TaskStatus.Created:
+                            case TaskStatus.WaitingForActivation:
+                            case TaskStatus.WaitingToRun:
+                            case TaskStatus.Running:
+                            case TaskStatus.WaitingForChildrenToComplete:
+                            case TaskStatus.RanToCompletion:
+                                break;
+                            case TaskStatus.Canceled:
+                            case TaskStatus.Faulted:
+                                result.Result.Error = "The request was cancelled";
+                                break;
+                        }
 
                         Write(" .");
                     }
@@ -121,7 +58,7 @@ namespace AutomatedCodeGeneration.CLI
             } while (!result.IsCompleted);
 
 #if RELEASE
-                Clear();
+            Console.Clear();
 #endif
 
             WriteLine($"Details:\n\tId:\t\t{info.Id}\n\tLanguage:\t{info.TargetLanguage}\n\tOutput:\t\t{info.Output}");
@@ -142,14 +79,102 @@ namespace AutomatedCodeGeneration.CLI
                 ForegroundColor = color;
             }
         }
+
+        private static SystemInfo GetInfoFromArgs(IEnumerable<string> args)
+        {
+            //var systemId = Guid.Parse("aef3af89-f90a-4670-bcb0-ff7693325faa");
+            var systemId = Guid.Parse("234e024d-d03f-4158-0fb9-08d8e15373c5");
+            string output = null, language = "CSharp", previousFlag = null;
+#if DEBUG
+            args = new[]
+            {
+                "-id",
+                "234e024d-d03f-4158-0fb9-08d8e15373c5",
+                "-path",
+                @"C:\Temp\ACG\",
+                "-lang",
+                "CSharp"
+            };
+#endif
+
+            var errors = new List<string>();
+
+            foreach (var a in args)
+            {
+                if (a[0].Equals('-'))
+                {
+                    previousFlag = a[1..].ToLower();
+                }
+                else
+                {
+                    var arg = a.ToLower();
+
+                    switch (previousFlag) // Search for flags
+                    {
+                        case "outpath":
+                        case "output":
+                        case "outdir":
+                        case "result":
+                        case "path":
+                            var path = a.Replace('-', ' ');
+                            if (Directory.Exists(path) || a[0..6].ToLower().Equals("github "))
+                            {
+                                output = path;
+                            }
+                            else
+                            {
+                                errors.Add($"Invalid path: {path}");
+                            }
+
+                            break;
+                        case "systemid":
+                        case "system":
+                        case "id":
+                            if (!Guid.TryParse(arg, out systemId))
+                            {
+                                errors.Add($"Invalid id: {a}");
+                            }
+
+                            break;
+                        case "language":
+                        case "lang":
+                            var l = LanguageExists(arg);
+                            if (l.HasValue)
+                            {
+                                language = arg;
+                            }
+                            else
+                            {
+                                errors.Add($"Invalid language: {a}");
+                            }
+
+                            break;
+                        default:
+                            errors.Add($"Invalid flag: '{previousFlag}'");
+                            break;
+                    }
+
+                    previousFlag = "";
+                }
+            }
+
+            if (errors.Count > 0)
+            {
+                GotError(errors.ToArray());
+            }
+
+            return CreateSystemInfo(systemId, language, output);
+        }
+
         private static void GotError(params string[] errors)
         {
             var color = ForegroundColor;
 
             ForegroundColor = ConsoleColor.Red;
 
-            foreach (var e in errors)
-                Error.WriteLine(e);
+            foreach (var e in errors) Error.WriteLine(e);
+
+            WriteLine();
 
             ForegroundColor = color;
 

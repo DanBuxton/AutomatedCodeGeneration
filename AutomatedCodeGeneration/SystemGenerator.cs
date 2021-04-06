@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using AutomatedCodeGeneration.DataLayer;
 
 namespace AutomatedCodeGeneration
 {
-    public sealed class SystemGenerator
+    public sealed record SystemGenerator
     {
-        public static async Task<Result> CreateSystem(SystemInfo systemInfo)
+        public static async Task<Result> CreateSystem(SystemInfo systemInfo, CancellationToken cancellationToken = default)
         {
 #if DEBUG
             System.Diagnostics.Stopwatch sw = new();
@@ -15,7 +17,7 @@ namespace AutomatedCodeGeneration
 
             var systemBuilder = new SystemBuilder(systemInfo);
 
-            var result = await systemBuilder.CreateSystem();
+            var result = await systemBuilder.CreateSystem(cancellationToken);
 
 #if DEBUG
             sw.Stop();
@@ -23,16 +25,16 @@ namespace AutomatedCodeGeneration
             Console.WriteLine($"Completed in: {sw.Elapsed.TotalMilliseconds}ms");
 #endif
 
-            return new Result((result as InvalidOperationException)?.Message);
+            return new Result((result as Exception)?.Message);
         }
 
         public sealed record Result
         {
             public bool HasError => Error != null;
 
-            public string Error { get; }
+            public string Error { get; set; }
 
-            public Result(string error)
+            public Result(string error = null)
             {
                 Error = error;
             }

@@ -1,5 +1,5 @@
-﻿using System;
-using AutomatedCodeGeneration.DataLayer.Files.Builders;
+﻿using AutomatedCodeGeneration.DataLayer.Files.Builders;
+using AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -31,40 +31,40 @@ namespace AutomatedCodeGeneration.DataLayer.Tests
                 .WithImports(imports)
                 .WithNamespace(ns).WithClassName(name)
                 .WithClassAccess(access)
-                .Build().ToString();
+                .Build().Generate().ToString();
+
+            var hasNamespace = !string.IsNullOrEmpty(ns);
 
             var expected = "";
 
-            if (imports.Length > 0)
-            {
-                expected += $"using {string.Join($";{newLine}using ", imports)};{newLine}{newLine}";
-            }
+            expected = imports.Length > 0 ? $"using {string.Join($";{newLine}using ", imports)}" : "using System";
+
+            expected += $";{newLine}{newLine}";
 
             var i = 0;
 
-            if (!string.IsNullOrEmpty(ns))
+            if (hasNamespace)
             {
                 expected += $"namespace {ns}{newLine}{{{newLine}";
                 expected = Indent(expected, indent, ++i);
             }
 
-            expected += $"public class {name}{newLine}";
+            expected += $"{Helper.ToString(access)} class {name}{newLine}";
             expected = Indent(expected, indent, i);
             expected += $"{{{newLine}";
             expected = Indent(expected, indent, ++i);
             expected += $"{newLine}";
             expected = Indent(expected, indent, --i);
             expected += "}";
-            if (!string.IsNullOrEmpty(ns))
+
+            if (hasNamespace)
             {
                 expected += $"{newLine}}}";
             }
-
-
+            
 #if DEBUG
-            _output.WriteLine($"Expected:\n\n{expected}\n");
+            _output.WriteLine($"Expected:\n\n{expected}");
             _output.WriteLine($"Result:\n\n{result}");
-            _output.WriteLine($"Result:\n\n{Environment.NewLine}");
 #endif
 
             Assert.Equal(expected, result);
