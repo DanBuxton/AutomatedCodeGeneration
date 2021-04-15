@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using AutomatedCodeGeneration.DataLayer.Diagrams;
+using Microsoft.EntityFrameworkCore;
 
 namespace AutomatedCodeGeneration.DataLayer.Data
 {
@@ -24,7 +26,7 @@ namespace AutomatedCodeGeneration.DataLayer.Data
 
             if (DbOk)
             {
-                model = await Db.Systems.FindAsync(id);
+                model = await Db.Systems.Include(x=>x.Classes).FirstOrDefaultAsync(x=>x.Id == id);
             }
 
             return model;
