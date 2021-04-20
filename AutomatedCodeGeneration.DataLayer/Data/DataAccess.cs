@@ -12,21 +12,13 @@ namespace AutomatedCodeGeneration.DataLayer.Data
 
         protected static bool DbOk => Db.Database.CanConnect();
 
-        protected static async Task AddModel(SystemModel model)
+        protected static Task<SystemModel> GetSystem(Guid id)
         {
-            if (DbOk)
-            {
-                await Db.Systems.AddAsync(model);
-            }
-        }
-
-        protected static async Task<SystemModel> GetSystem(Guid id)
-        {
-            SystemModel model = null;
+            Task<SystemModel> model = null;
 
             if (DbOk)
             {
-                model = await Db.Systems.Include(x=>x.Classes).FirstOrDefaultAsync(x=>x.Id == id);
+                model = Db.Systems.Include(x=>x.Classes).FirstOrDefaultAsync(x=>x.Id == id && !x.BeenGenerated);
             }
 
             return model;
