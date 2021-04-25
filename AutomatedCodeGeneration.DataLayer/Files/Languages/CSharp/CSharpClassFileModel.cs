@@ -9,6 +9,7 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp
         {
             Indent = indent;
             NewLine = newLine;
+            FileExt = "cs";
         }
 
         public override StringBuilder Generate()
@@ -16,7 +17,15 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp
             StringBuilder builder = new();
             var currentIndent = 0;
 
-            if (Imports.Count > 0)
+            int importCount = Imports.Count,
+                attributeCount = ClassAttributes.Count,
+                dataCount = FieldsAndProperties.Count,
+                constructorCount = Constructors.Count,
+                methodCount = Methods.Count;
+
+            var allEmpty = dataCount < 1 && constructorCount < 1 && methodCount < 1;
+
+            if (importCount > 0)
             {
                 Imports.ForEach(import =>
                 {
@@ -31,13 +40,11 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp
                 currentIndent++;
             }
 
-            var indent = currentIndent;
-            ClassAttributes.ForEach(attr =>
+            if (attributeCount > 0)
             {
-                IndentStringBuilder(builder, indent);
-
-                builder.Append($"{attr}{NewLine}");
-            });
+                IndentStringBuilder(builder, currentIndent);
+                builder.Append($"[{string.Join(", ", ClassAttributes)}]{NewLine}");
+            }
 
             IndentStringBuilder(builder, currentIndent);
             builder.Append($"{ClassAccess} class {ClassName}{NewLine}");
@@ -46,6 +53,7 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp
 
             FieldsAndProperties.ForEach(d =>
             {
+                IndentStringBuilder(builder, currentIndent);
 
             });
 
@@ -53,7 +61,7 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp
             {
                 IndentStringBuilder(builder, currentIndent);
 
-                builder.Append($"{Helper.ToString(ctr.Access)} {ctr.NameType.Name}({string.Join(", ", ctr.Params.Select(p => $"{p.Type} {p.Name}"))}){{{NewLine}");
+                builder.Append($"{Helper.ToString(ctr.Access)} {ctr.NameType.Name}({string.Join(", ",ctr.Params.Select(p => $"{p.Type} {p.Name}"))}){{{NewLine}");
                 IndentStringBuilder(builder, ++currentIndent);
                 builder.Append($"{NewLine}");
                 IndentStringBuilder(builder, --currentIndent);
@@ -63,7 +71,13 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp
             {
                 IndentStringBuilder(builder, currentIndent);
 
-                builder.Append($"{Helper.ToString(m.Access)} {m.NameType.Type} {m.NameType.Name}({string.Join(", ", m.Params.Select(p => $"{p.Type} {p.Name}"))}){NewLine}");
+                builder.Append($"{Helper.ToString(m.Access)} ");
+                if (m.NameType.IsStatic)
+                {
+                    builder.Append(m.NameType.IsStatic ? "static " : "");
+                }
+                builder.Append($"{m.NameType.Type} {m.NameType.Name}({string.Join(", ", m.Params.Select(p => $"{p.Type} {p.Name}"))}){NewLine}");
+
                 IndentStringBuilder(builder, currentIndent);
                 builder.Append($"{{{NewLine}");
                 IndentStringBuilder(builder, ++currentIndent);
@@ -72,9 +86,11 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp
                 builder.Append($"}}{NewLine}");
             });
 
-            //builder.Append(NewLine);
-            IndentStringBuilder(builder, currentIndent);
-            builder.Append(NewLine);
+            if (allEmpty)
+            {
+                IndentStringBuilder(builder, currentIndent);
+                builder.Append(NewLine);
+            }
             IndentStringBuilder(builder, --currentIndent);
             builder.Append($"}}{(string.IsNullOrWhiteSpace(Namespace) ? "" : NewLine)}");
 

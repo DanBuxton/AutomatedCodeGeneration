@@ -10,6 +10,7 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Abstractions
         string NewLine { get; }
         char? LineDelimiter { get; }
         string FileName { get; }
+        string FileExt { get; }
 
         void IndentStringBuilder(StringBuilder value, int noOfTimes);
     }

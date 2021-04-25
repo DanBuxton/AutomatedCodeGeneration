@@ -1,29 +1,36 @@
-﻿using AutomatedCodeGeneration.DataLayer.Files;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutomatedCodeGeneration.DataLayer.Diagrams;
+using AutomatedCodeGeneration.DataLayer.Diagrams.Abstractions;
+using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
 using AutomatedCodeGeneration.DataLayer.Files.Abstractions;
+using AutomatedCodeGeneration.DataLayer.Files.Builders;
 using AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp;
 
 namespace AutomatedCodeGeneration.DataLayer.Managers.Strategy
 {
-    public class CSharpStrategy : ILanguageManager
+    public class CSharpStrategy : Strategy
     {
-        public void GenerateClassFile(IClassFile file)
+        public override IClassFile GenerateClassFile(ClassModel model)
         {
-            if (file is not CSharpClassFileModel)
-                throw new System.NotImplementedException();
+            return new CSharpClassFileBuilder()
+                .WithClassAccess(model.Access)
+                .WithClassName(model.Name)
+                .WithNamespace(model.Namespace)
+                .WithMethods(model.Methods)
+                .WithFieldsAndProperties(model.Data)
+                .Build() as CSharpClassFileModel;
         }
 
-        public void GenerateInterfaceFile(IInterfaceFile file)
+        public override IInterfaceFile GenerateInterfaceFile(ClassModel model)
         {
-            if (file is not CSharpInterfaceFileModel)
-                return;
-            // throw new System.NotImplementedException();
-
-                
-        }
-
-        public void GenerateFile(IFileModel file)
-        {
-            throw new System.NotImplementedException();
+            return new CSharpInterfaceFileBuilder()
+                .WithNamespace(model.Namespace)
+                .WithAccess(model.Access)
+                .WithName(model.Name)
+                .Build() as IInterfaceFile;
         }
     }
 }

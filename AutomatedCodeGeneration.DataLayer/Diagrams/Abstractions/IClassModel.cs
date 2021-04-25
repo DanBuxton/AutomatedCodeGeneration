@@ -3,11 +3,12 @@ using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
 
 namespace AutomatedCodeGeneration.DataLayer.Diagrams.Abstractions
 {
-    internal interface IClassModel : IDiagram
+    internal interface IClassModel : INamespace, IDiagram
     {
-        string Name { get; set; }
-        List<ClassMethodModel> Methods { get; set; }
-        List<ClassDataModel> Data { get; set; }
-        AccessType Access { get; set; }
+        string Name { get; }
+        List<ClassMethodModel> Methods { get; }
+        List<ClassDataModel> Data { get; }
+        Enums.AccessType Access { get; }
+        FileType Type { get; }
     }
 }

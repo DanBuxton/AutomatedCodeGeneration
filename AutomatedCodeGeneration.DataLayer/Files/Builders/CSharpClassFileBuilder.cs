@@ -1,81 +1,81 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
+using AutomatedCodeGeneration.DataLayer.Files.Abstractions;
 using AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp;
 
 namespace AutomatedCodeGeneration.DataLayer.Files.Builders
 {
-    public class CSharpFileBuilder : IFileModelBuilder
+    public class CSharpClassFileBuilder : IClassFileBuilder
     {
         private readonly CSharpClassFileModel _model;
-        public FileModel ModelType { get; }
 
-        public CSharpFileBuilder(string indent = "\t", string newLine = "\n")
+        public CSharpClassFileBuilder(string indent = "\t", string newLine = "\n")
         {
             _model = new CSharpClassFileModel(indent, newLine);
-            ModelType = _model;
         }
 
-        public CSharpFileBuilder WithImports(IEnumerable<string> imports)
+        public IClassFileBuilder WithImports([NotNull] List<string> imports)
         {
-            _model.Imports = imports.ToList();
+            if (!imports.Contains("System"))
+                imports.Insert(0, "System");
 
-            if (!_model.Imports.Contains("System"))
-                _model.Imports.Insert(0, "System");
+            _model.Imports = imports.ToList();
 
             return this;
         }
 
-        public CSharpFileBuilder WithNamespace(string ns)
+        public IClassFileBuilder WithNamespace(string ns)
         {
             _model.Namespace = ns;
 
             return this;
         }
 
-        public CSharpFileBuilder WithClassAttributes(List<string> attributes)
+        public IClassFileBuilder WithClassAttributes(List<string> attributes)
         {
             _model.ClassAttributes = attributes;
 
             return this;
         }
 
-        public CSharpFileBuilder WithClassAccess(AccessType access)
+        public IClassFileBuilder WithClassAccess(Enums.AccessType access)
         {
-            _model.ClassAccess = Helper.ToString(access);
+            _model.ClassAccess = access.AsLowerString();
 
             return this;
         }
 
-        public CSharpFileBuilder WithClassName(string name)
+        public IClassFileBuilder WithClassName(string name)
         {
             _model.ClassName = name;
 
             return this;
         }
 
-        public CSharpFileBuilder WithFieldsAndProperties(List<ClassDataModel> fieldsAndProperties)
+        public IClassFileBuilder WithFieldsAndProperties(List<ClassDataModel> fieldsAndProperties)
         {
             _model.FieldsAndProperties = fieldsAndProperties;
 
             return this;
         }
 
-        public CSharpFileBuilder WithConstructors(List<ClassMethodModel> constructors)
+        public IClassFileBuilder WithConstructors(List<ClassMethodModel> constructors)
         {
             _model.Constructors = constructors;
 
             return this;
         }
 
-        public CSharpFileBuilder WithMethods(List<ClassMethodModel> methods)
+        public IClassFileBuilder WithMethods(List<ClassMethodModel> methods)
         {
             _model.Methods = methods;
 
             return this;
         }
 
-        public FileModel Build()
+        public IFileModel Build()
         {
             return _model;
         }

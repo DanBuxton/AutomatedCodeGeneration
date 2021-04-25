@@ -8,7 +8,8 @@ namespace AutomatedCodeGeneration.DataLayer.Files
         public string Indent { get; protected set; }
         public string NewLine { get; protected set; }
         public char? LineDelimiter { get; protected set; } = ';';
-        public string FileName { get; protected set; }
+        public string FileName { get; set; }
+        public string FileExt { get; protected set; }
 
         public void IndentStringBuilder(StringBuilder value, int noOfTimes)
         {

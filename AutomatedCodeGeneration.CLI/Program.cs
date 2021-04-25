@@ -91,7 +91,8 @@ namespace AutomatedCodeGeneration.CLI
                 "-id",
                 "234e024d-d03f-4158-0fb9-08d8e15373c5",
                 "-path",
-                @"C:\Temp\ACG\",
+                @"D:\Temp\ACG\",
+                //"github access_token",
                 "-lang",
                 "CSharp"
             };

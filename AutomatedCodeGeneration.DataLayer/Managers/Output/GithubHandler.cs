@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if DEBUG
 using System.Diagnostics;
+#endif
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,8 +13,13 @@ namespace AutomatedCodeGeneration.DataLayer.Managers.Output
 {
     public sealed class GithubHandler : IOutputHandler
     {
-        public string Token { get; private set; }
+        public string OutputDetails { get; set; }
 
+        public GithubHandler(string outputDetails)
+        {
+            OutputDetails = outputDetails;
+        }
+        
         private static IGitHubClient GetGithubClient(string token)
         {
             //const string appClientId = "97ce255accacf4d16e86";//, appClientSecret = "e8fb5ce22f33011c957ea335897fbf7b741405b2";
@@ -23,14 +30,16 @@ namespace AutomatedCodeGeneration.DataLayer.Managers.Output
             return client;
         }
 
-        public async Task<bool> Output(string output, IList<IFileModel> files, CancellationToken token = default)
+        public async Task<bool> Output(IList<IFileModel> files, CancellationToken token)
         {
             const string appClientId = "97ce255accacf4d16e86";//, appClientSecret = "e8fb5ce22f33011c957ea335897fbf7b741405b2";
 
-            var client = GetGithubClient(Token);
+            var client = GetGithubClient(OutputDetails);
 
-            Debug.WriteLine($"Scopes: {string.Join(", ", (await client.Authorization.CheckApplicationAuthentication(appClientId, Token)).Scopes)}");
-            
+#if DEBUG
+            Debug.WriteLine($"Scopes: {string.Join(", ", (await client.Authorization.CheckApplicationAuthentication(appClientId, OutputDetails)).Scopes)}");
+#endif
+
             var user = await client.User.Current();
 
             if (!user.Type.HasValue) return false;
@@ -53,18 +62,13 @@ namespace AutomatedCodeGeneration.DataLayer.Managers.Output
 
                     var author = new Committer("Automated-Code-Generation", "dan.buxton99@gmail.com", new DateTimeOffset(new DateTime(2021, 5, 11, new GregorianCalendar())));
 
-                    var createFile = await clientRepo.Content.CreateFile(repo.Id, "", new CreateFileRequest("", "") { Author = author });
+                    var createFile = await clientRepo.Content.CreateFile(repo.Id, "/", new CreateFileRequest("", "") { Author = author });
 
 
 
                     return true;
                 default: return false;
             }
-        }
-
-        public void SetOutput(string output)
-        {
-            Token = output.Replace("Github: ", "");
         }
     }
 }
