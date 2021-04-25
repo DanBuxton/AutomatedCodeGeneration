@@ -7,7 +7,7 @@ namespace AutomatedCodeGeneration.DataLayer
         {
             //JavaScript = 0,
             CSharp = 1,
-            //Java = 2
+            Java = 2
             //Python = 3
         }
         public enum AccessType
