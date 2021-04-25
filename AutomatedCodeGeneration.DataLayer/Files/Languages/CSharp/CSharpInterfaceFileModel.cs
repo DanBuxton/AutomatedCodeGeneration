@@ -94,11 +94,7 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp
             IndentStringBuilder(builder, --currentIndent);
             builder.Append($"}}{(string.IsNullOrWhiteSpace(Namespace) ? "" : NewLine)}");
 
-            if (string.IsNullOrWhiteSpace(Namespace)) return builder;
-            builder.Append('}');
-            currentIndent--;
-
-            return builder;
+            return string.IsNullOrWhiteSpace(Namespace) ? builder : builder.Append('}');
         }
     }
 }

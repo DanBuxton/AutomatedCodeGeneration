@@ -9,13 +9,13 @@ namespace AutomatedCodeGeneration.DataLayer.Managers.Strategy
 {
     public abstract class Strategy
     {
-        public abstract IClassFile GenerateClassFile(ClassModel model);
+        protected abstract IClassFile GenerateClassFile(ClassModel model);
 
-        public abstract IInterfaceFile GenerateInterfaceFile(ClassModel model);
+        protected abstract IInterfaceFile GenerateInterfaceFile(ClassModel model);
 
         public virtual IInterfaceFile GenerateEnumFile(ClassModel model) => null;
 
-        public IFileModel GenerateFile(ClassModel model) =>
+        private IFileModel GenerateFile(ClassModel model) =>
             model.Type switch
             {
                 FileType.Class => GenerateClassFile(model),

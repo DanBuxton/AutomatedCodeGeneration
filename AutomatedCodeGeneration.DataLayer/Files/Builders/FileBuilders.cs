@@ -10,11 +10,9 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Builders
     }
     public interface IClassFileBuilder : IFileBuilder
     {
-
-
         public IClassFileBuilder WithNamespace(string ns);
 
-        public IClassFileBuilder WithClassAttributes(List<string> attributes);
+        public IClassFileBuilder WithAttributes(List<string> attributes);
 
         public IClassFileBuilder WithClassAccess(Enums.AccessType access);
 
@@ -25,5 +23,17 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Builders
         public IClassFileBuilder WithConstructors(List<ClassMethodModel> constructors);
 
         public IClassFileBuilder WithMethods(List<ClassMethodModel> methods);
+    }
+    public interface IInterfaceFileBuilder : IFileBuilder
+    {
+        public IInterfaceFileBuilder WithNamespace(string ns);
+
+        public IInterfaceFileBuilder WithAttributes(List<string> attributes);
+
+        public IInterfaceFileBuilder WithAccess(Enums.AccessType access);
+
+        public IInterfaceFileBuilder WithName(string name);
+
+        public IInterfaceFileBuilder WithMethods(List<ClassMethodModel> methods);
     }
 }

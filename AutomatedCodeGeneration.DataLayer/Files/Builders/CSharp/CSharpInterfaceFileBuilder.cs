@@ -5,7 +5,7 @@ using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
 using AutomatedCodeGeneration.DataLayer.Files.Abstractions;
 using AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp;
 
-namespace AutomatedCodeGeneration.DataLayer.Files.Builders
+namespace AutomatedCodeGeneration.DataLayer.Files.Builders.CSharp
 {
     public class CSharpInterfaceFileBuilder : IFileBuilder
     {
@@ -18,9 +18,6 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Builders
 
         public CSharpInterfaceFileBuilder WithImports([NotNull] List<string> imports)
         {
-            if (!imports.Contains("System"))
-                imports.Insert(0, "System");
-
             _model.Imports = imports.ToList();
 
             return this;

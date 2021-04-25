@@ -33,7 +33,7 @@ namespace AutomatedCodeGeneration.DataLayer
             Helper.GetLanguage(language) switch
             {
                 Enums.Languages.CSharp => new CSharpStrategy(),
-                _ => throw new InvalidOperationException("Language not supported yet")
+                _ => throw new InvalidOperationException($"Generation not supported for {language}")
             };
 
         /// <summary>

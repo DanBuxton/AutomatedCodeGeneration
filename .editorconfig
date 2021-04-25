@@ -6,4 +6,6 @@
 #prefer the language keyword for local variables, method parameters, and class members, instead of the type name, for types that have a keyword to represent them
 dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
 
+#dotnet_diagnostic.CS1591.severity = error
+
 #file_header_template = This application turns UML documentation, in the form of SQL, into code and uploads to a given users GitHub.\nCopyright (c) 2021 DanBuxton\nThis software is provided under the MIT license\nSee: https://spdx.org/licenses/MIT.html# This application turns UML documentation, in the form of SQL, into code and uploads to a given users GitHub.\nCopyright (c) 2021 DanBuxton\n\nThis program is free software: you can redistribute it and/or modify\nit under the terms of the GNU Affero General Public License as published\nby the Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY, without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU Affero General Public License for more details.\n\nYou should have received a copy of the GNU Affero General Public License\nalong with this program.  If not, see <https://www.gnu.org/licenses/>.

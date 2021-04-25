@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using AutomatedCodeGeneration.DataLayer.Files.Builders;
+using AutomatedCodeGeneration.DataLayer.Files.Builders.CSharp;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -9,7 +9,6 @@ namespace AutomatedCodeGeneration.DataLayer.Tests
     {
         public sealed class CSharpTest
         {
-
 #if DEBUG
             private readonly ITestOutputHelper _output;
 
@@ -37,9 +36,12 @@ namespace AutomatedCodeGeneration.DataLayer.Tests
 
                 var hasNamespace = !string.IsNullOrEmpty(ns);
 
-                var expected = imports.Length > 0 ? $"using {string.Join($";{newLine}using ", imports)}" : "using System";
+                var expected = "";
 
-                expected += $";{newLine}{newLine}";
+                if (imports.Length > 0)
+                {
+                    expected = $"using {string.Join($";{newLine}using ", imports)};{newLine}{newLine}";
+                }
 
                 var i = 0;
 
@@ -89,9 +91,12 @@ namespace AutomatedCodeGeneration.DataLayer.Tests
 
                 var hasNamespace = !string.IsNullOrEmpty(ns);
 
-                var expected = imports.Length > 0 ? $"using {string.Join($";{newLine}using ", imports)}" : "using System";
+                var expected = "";
 
-                expected += $";{newLine}{newLine}";
+                if (imports.Length > 0)
+                {
+                    expected += $"using {string.Join($";{newLine}using ", imports)};{newLine}{newLine}";
+                }
 
                 var i = 0;
 
