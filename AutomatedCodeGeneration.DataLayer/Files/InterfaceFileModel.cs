@@ -11,11 +11,8 @@ namespace AutomatedCodeGeneration.DataLayer.Files
         public string Namespace { get; set; }
 
         public List<string> Attributes { get; set; } = new();
-        //public string ClassName { get; set; }
         public string Access { get; set; }
-
-        public List<ClassDataModel> FieldsAndProperties { get; set; } = new();
-        public List<ClassMethodModel> Constructors { get; set; } = new();
+        
         public List<ClassMethodModel> Methods { get; set; } = new();
     }
 }

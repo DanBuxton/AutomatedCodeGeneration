@@ -2,7 +2,7 @@
 
 namespace AutomatedCodeGeneration.DataLayer.Files.Abstractions
 {
-    public interface IInterfaceFile : IFileModel, IImports, IFileMethod, IFileProperty
+    public interface IInterfaceFile : IFileModel, IImports, IFileMethod
     {
 
     }

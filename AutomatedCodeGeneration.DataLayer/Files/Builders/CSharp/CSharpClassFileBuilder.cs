@@ -37,14 +37,14 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Builders.CSharp
             return this;
         }
 
-        public IClassFileBuilder WithClassAccess(Enums.AccessType access)
+        public IClassFileBuilder WithAccess(Enums.AccessType access)
         {
             _model.ClassAccess = access.AsLowerString();
 
             return this;
         }
 
-        public IClassFileBuilder WithClassName(string name)
+        public IClassFileBuilder WithName(string name)
         {
             _model.ClassName = name;
 

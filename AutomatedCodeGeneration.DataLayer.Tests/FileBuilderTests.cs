@@ -30,8 +30,8 @@ namespace AutomatedCodeGeneration.DataLayer.Tests
                 //const string indent = "    ", newLine = "\n\r";
                 var result = new CSharpClassFileBuilder(indent, newLine)
                     .WithImports(imports.ToList())
-                    .WithNamespace(ns).WithClassName(name)
-                    .WithClassAccess(access)
+                    .WithNamespace(ns).WithName(name)
+                    .WithAccess(access)
                     .Build().Generate().ToString();
 
                 var hasNamespace = !string.IsNullOrEmpty(ns);

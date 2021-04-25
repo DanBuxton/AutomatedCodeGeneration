@@ -10,8 +10,8 @@ namespace AutomatedCodeGeneration.DataLayer.Managers.Strategy
         protected override IClassFile GenerateClassFile(ClassModel model)
         {
             return new CSharpClassFileBuilder()
-                .WithClassAccess(model.Access)
-                .WithClassName(model.Name)
+                .WithAccess(model.Access)
+                .WithName(model.Name)
                 .WithNamespace(model.Namespace)
                 .WithMethods(model.Methods)
                 .WithFieldsAndProperties(model.Data)

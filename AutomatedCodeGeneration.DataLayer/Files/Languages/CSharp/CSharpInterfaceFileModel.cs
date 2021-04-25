@@ -8,7 +8,7 @@ using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
 
 namespace AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp
 {
-    internal class CSharpInterfaceFileModel : InterfaceFileModel//, ICSharpFile
+    internal class CSharpInterfaceFileModel : InterfaceFileModel
     {
         public CSharpInterfaceFileModel(string indent = "\t", string newLine = "\n")
         {

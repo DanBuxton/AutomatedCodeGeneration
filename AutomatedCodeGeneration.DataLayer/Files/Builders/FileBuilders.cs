@@ -14,9 +14,9 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Builders
 
         public IClassFileBuilder WithAttributes(List<string> attributes);
 
-        public IClassFileBuilder WithClassAccess(Enums.AccessType access);
+        public IClassFileBuilder WithAccess(Enums.AccessType access);
 
-        public IClassFileBuilder WithClassName(string name);
+        public IClassFileBuilder WithName(string name);
 
         public IClassFileBuilder WithFieldsAndProperties(List<ClassDataModel> fieldsAndProperties);
 
