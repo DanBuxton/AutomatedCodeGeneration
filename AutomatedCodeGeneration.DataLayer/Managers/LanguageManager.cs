@@ -8,65 +8,29 @@ using AutomatedCodeGeneration.DataLayer.Managers.Strategy;
 
 namespace AutomatedCodeGeneration.DataLayer.Managers
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public abstract class LanguageManager
+    public sealed class LanguageManager
     {
-        protected readonly List<IFileModel> Files = new();
-        protected readonly SystemModel Model;
-        
-        protected internal string Extension;
+        private readonly List<IFileModel> _files = new();
+        private readonly SystemModel _model;
 
         private IOutputHandler _output;
-        private ILanguageManager _language;
+        private Strategy.Strategy _language;
 
-        protected LanguageManager(SystemModel model, string ext)
+        public LanguageManager(SystemModel model)
         {
-            Model = model;
-            Extension = ext;
+            _model = model;
         }
 
         public void SetOutputHandler(IOutputHandler handler) => _output = handler;
-        public void SetLanguageHandler(ILanguageManager handler) => _language = handler;
+        public void SetLanguageHandler(Strategy.Strategy handler) => _language = handler;
 
-        public async Task<bool> OutputFiles(string output, CancellationToken cancellationToken = default)
+        public async Task<bool> OutputFiles(CancellationToken cancellationToken)
         {
-            return await _output.Output(output, Files, cancellationToken);
+            // Add files to list
+            _language.GenerateFiles(_model).ForEach(_files.Add);
+
+            // Output files to github or file system
+            return await _output.Output(_files, cancellationToken);
         }
-
-        public abstract void GenerateFiles();
-        public abstract Task GenerateFilesAsync();
-
-        //public virtual Task OutputFile(IFileModel file, string path)
-        //{
-
-
-        //    return null;
-        //}
-
-        ////For testing purposes
-        //public async Task<bool> OutputFiles(string path)
-        //{
-        //    try
-        //    {
-        //        foreach (var file in Files)
-        //        {
-        //            await OutputFile(file, path);
-
-        //            var filePath = $"{path}\\{file.ClassName}.{Extension}";
-
-        //            if (File.Exists(filePath)) continue;
-
-        //            await File.WriteAllTextAsync(filePath, file.ToString());
-        //        }
-
-        //        return true;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw new IOException("There was an error creating/writing content to the files", e);
-        //    }
-        //}
     }
 }

@@ -7,6 +7,6 @@ namespace AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram
     {
         public Guid Id { get; set; }
         public virtual NameTypeModel NameType { get; init; }
-        public AccessType Access { get; init; }
+        public Enums.AccessType Access { get; init; }
     }
 }

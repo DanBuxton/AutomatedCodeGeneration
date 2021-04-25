@@ -3,6 +3,6 @@
     internal interface IClassData
     {
         NameTypeModel NameType { get; init; }
-        AccessType Access { get; init; }
+        Enums.AccessType Access { get; init; }
     }
 }

@@ -1,14 +1,20 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
 
 namespace AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp
 {
-    internal class CSharpInterfaceFileModel : InterfaceFileModel
+    internal class CSharpInterfaceFileModel : InterfaceFileModel//, ICSharpFile
     {
         public CSharpInterfaceFileModel(string indent = "\t", string newLine = "\n")
         {
             Indent = indent;
             NewLine = newLine;
+            FileExt = "cs";
         }
 
         public override StringBuilder Generate()
@@ -31,7 +37,7 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp
                 currentIndent++;
             }
 
-            ClassAttributes.ForEach(attr =>
+            Attributes.ForEach(attr =>
             {
                 IndentStringBuilder(builder, currentIndent);
 
@@ -39,39 +45,50 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp
             });
 
             IndentStringBuilder(builder, currentIndent);
-            builder.Append($"{ClassAccess} class {ClassName}{NewLine}");
+            builder.Append($"{Access} interface {FileName}{NewLine}");
             IndentStringBuilder(builder, currentIndent++);
             builder.Append($"{{{NewLine}");
 
-            FieldsAndProperties.ForEach(d =>
-            {
+            //FieldsAndProperties.Where(d=>d.Access == Enums.AccessType.Private).ToList().ForEach(f =>
+            //{
+            //    IndentStringBuilder(builder, currentIndent);
 
-            });
+            //    if (f.NameType.IsStatic)
+            //    {
+            //        builder.Append($"private static {f.NameType.Type} {f.NameType.Name.ToUpper()};");
+            //    }
+            //    else
+            //    {
+            //        builder.Append($"private {f.NameType.Type} _{f.NameType.Name[0].ToString().ToLower()}{f.NameType.Name[1..]};");
+            //    }
+            //});
 
-            Constructors.ForEach(ctr =>
-            {
-                IndentStringBuilder(builder, currentIndent);
+            //FieldsAndProperties.ForEach(d =>
+            //{
+            //    var removed = new List<ClassMethodModel>();
 
-                builder.Append($"{Helper.ToString(ctr.Access)} {ctr.NameType.Name}({string.Join(", ", ctr.Params.Select(p => $"{p.Type} {p.Name}"))}){{{NewLine}");
-                IndentStringBuilder(builder, ++currentIndent);
-                builder.Append($"{NewLine}");
-                IndentStringBuilder(builder, --currentIndent);
-                builder.Append($"}}{NewLine}");
-            });
+            //    foreach (var m in Methods)
+            //    {
+            //        Debug.WriteLine(m.NameType.Name[2..]);
+
+            //        if (!m.NameType.Name[2..].Equals(d.NameType.Name)) continue;
+
+            //        if (!removed.Contains(m))
+            //        {
+            //            removed.Add(m);
+            //        }
+
+            //        Methods.Remove(m);
+            //    }
+            //});
+
             Methods.ForEach(m =>
             {
                 IndentStringBuilder(builder, currentIndent);
 
-                builder.Append($"{Helper.ToString(m.Access)} {m.NameType.Type} {m.NameType.Name}({string.Join(", ", m.Params.Select(p => $"{p.Type} {p.Name}"))}){NewLine}");
-                IndentStringBuilder(builder, currentIndent);
-                builder.Append($"{{{NewLine}");
-                IndentStringBuilder(builder, ++currentIndent);
-                builder.Append($"{NewLine}");
-                IndentStringBuilder(builder, --currentIndent);
-                builder.Append($"}}{NewLine}");
+                builder.Append($"{Helper.ToString(m.Access)} {m.NameType.Type} {m.NameType.Name}({string.Join(", ", m.Params.Select(p => $"{p.Type} {p.Name}"))}){NewLine};");
             });
 
-            //builder.Append(NewLine);
             IndentStringBuilder(builder, currentIndent);
             builder.Append(NewLine);
             IndentStringBuilder(builder, --currentIndent);

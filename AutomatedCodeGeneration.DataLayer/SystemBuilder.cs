@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AutomatedCodeGeneration.DataLayer.Data;
-using AutomatedCodeGeneration.DataLayer.Diagrams;
-using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
 using AutomatedCodeGeneration.DataLayer.Managers;
 using AutomatedCodeGeneration.DataLayer.Managers.Output;
 using AutomatedCodeGeneration.DataLayer.Managers.Strategy;
@@ -14,107 +11,57 @@ namespace AutomatedCodeGeneration.DataLayer
     public sealed class SystemBuilder : DataAccess
     {
         private readonly Guid _id;
-        private readonly string _language;
-        private readonly string _output;
+        private readonly IOutputHandler _output;
+
+        private readonly Strategy _languageStrategy;
 
         public SystemBuilder(SystemInfo systemInfo)
         {
-            (_id, _language, _output) = systemInfo;
+            // Only need to know the system id outside of this method
+            var (id, lang, output) = systemInfo;
+            _id = id;
+
+            _languageStrategy = GetLanguageStrategy(lang);
+#if DEBUG
+            _output = new FileHandler(output);
+#elif RELEASE
+            _output = new GithubHandler(output);
+#endif
         }
 
+        private static Strategy GetLanguageStrategy(string language) =>
+            Helper.GetLanguage(language) switch
+            {
+                Enums.Languages.CSharp => new CSharpStrategy(),
+                _ => throw new InvalidOperationException("Language not supported yet")
+            };
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<object> CreateSystem(CancellationToken cancellationToken)
         {
             return await Task.Run(async () =>
             {
-                try
-                {
-                    var system = await GetSystem(_id) ?? GetModel();
-                    Console.WriteLine(system.Id);
+                    var system = await GetSystem(_id);// ?? GetModel();
 
-                    var mgr = Helper.GetLanguageManager(_language, system);
+                    if (system is null)
+                        throw new InvalidOperationException("Can't find Id");
 
-                    switch (Helper.GetLanguage(_language))
-                    {
-                        case Enums.Languages.CSharp:
-                            mgr.SetLanguageHandler(new CSharpStrategy());
-                            break;
-                        case Enums.Languages.Java:
-                            mgr.SetLanguageHandler(null);
-                            break;
-                        default:
-                            mgr.SetLanguageHandler(null);
-                            throw new InvalidOperationException();
-                    }
+                    LanguageManager mgr = new(system);
+
+                    mgr.SetLanguageHandler(_languageStrategy);
+                    mgr.SetOutputHandler(_output);
                     
                     //IOutputHandler handler = _output.ToLower().StartsWith("github: ")
                     //    ? new GithubHandler()
                     //    : new FileHandler();
 
-#if DEBUG
-                    mgr.SetOutputHandler(new FileHandler());
-#elif RELEASE
-                    mgr.SetOutputHandler(new GithubHandler());
-#endif
+                    return mgr.OutputFiles(cancellationToken);
 
-                    //await mgr.OutputFiles(_output, cancellationToken);
-
-                    await mgr.GenerateFilesAsync();
-
-                    //await mgr.GenerateFiles();
-
-                    //await mgr.UploadFiles(_output, new List<IFileModel>(), cancellationToken);
-
-                    //await mgr.UploadToGitHub(_output, new List<IFileModel>(), cancellationToken);
-#if DEBUG
-                    Console.WriteLine($"Language manager: {mgr.GetType().Name}");
-#endif
-                }
-                catch (Exception e)
-                {
-#if DEBUG
-                    return new InvalidOperationException(e.Message, e);
-#elif RELEASE
-                    return new InvalidOperationException("Sorry, there was an error generating your code!", e);
-#endif
-                }
-
-                return null;
             }, cancellationToken);
-
-        }
-
-        private static SystemModel GetModel()
-        {
-            SystemModel model = new()
-            {
-                Id = Guid.Parse("234e024d-d03f-4158-0fb9-08d8e15373c5"),
-                Namespace = "ACG"
-            };
-            var classes = new List<ClassModel>
-            {
-                new()
-                {
-                    Namespace = "ACG.CLI",
-                    Name = "Program",
-                    Access = AccessType.Public,
-                    Methods = new List<ClassMethodModel>
-                    {
-                        new()
-                        {
-                            Access = AccessType.Public,
-                            NameType = new NameTypeModel {Name = "Main", Type = "void", IsStatic = true},
-                            Params = new List<NameTypeModel>
-                            {
-                                new() { Name = "args", Type = "string[]"}
-                            }
-                        }
-                    }
-                }
-            };
-
-            model.Classes = classes;
-
-            return model;
         }
     }
 }
