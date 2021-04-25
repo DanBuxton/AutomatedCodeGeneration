@@ -45,21 +45,24 @@ namespace AutomatedCodeGeneration.DataLayer
         {
             return await Task.Run(async () =>
             {
-                    var system = await GetSystem(_id);// ?? GetModel();
+                if (!DbOk)
+                    return null;
 
-                    if (system is null)
-                        throw new InvalidOperationException("Can't find Id");
+                var system = await GetSystem(_id);// ?? GetModel();
 
-                    LanguageManager mgr = new(system);
+                if (system is null)
+                    throw new InvalidOperationException("Can't find Id");
 
-                    mgr.SetLanguageHandler(_languageStrategy);
-                    mgr.SetOutputHandler(_output);
-                    
-                    //IOutputHandler handler = _output.ToLower().StartsWith("github: ")
-                    //    ? new GithubHandler()
-                    //    : new FileHandler();
+                LanguageManager mgr = new(system);
 
-                    return mgr.OutputFiles(cancellationToken);
+                mgr.SetLanguageHandler(_languageStrategy);
+                mgr.SetOutputHandler(_output);
+
+                //IOutputHandler handler = _output.ToLower().StartsWith("github: ")
+                //    ? new GithubHandler()
+                //    : new FileHandler();
+
+                return mgr.OutputFiles(cancellationToken);
 
             }, cancellationToken);
         }
