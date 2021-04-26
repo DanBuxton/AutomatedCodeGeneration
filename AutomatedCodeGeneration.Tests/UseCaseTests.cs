@@ -1,21 +1,25 @@
 ﻿using System;
 using AutomatedCodeGeneration.DataLayer;
-using AutomatedCodeGeneration.Models;
 using Xunit;
+
+#if DEBUG
 using Xunit.Abstractions;
-using Xunit.Sdk;
+#endif
+
 using Helper = AutomatedCodeGeneration.Models.Helper;
 
 namespace AutomatedCodeGeneration.Tests
 {
     public class UseCaseTests
     {
+#if DEBUG
         private readonly ITestOutputHelper _output;
 
         public UseCaseTests(ITestOutputHelper output)
         {
             _output = output;
         }
+#endif
 
         [Theory]
         [InlineData("234e024d-d03f-4158-0fb9-08d8e15373c5", "CSharp", ".")]
@@ -28,7 +32,9 @@ namespace AutomatedCodeGeneration.Tests
 
             var result = await SystemGenerator.CreateSystem(new SystemInfo(goodId, lang, output));
 
+#if DEBUG
             _output.WriteLine($"ERROR: {result.Error}");
+#endif
 
             if (Helper.LanguageExists(lang).HasValue)
             {

@@ -2,19 +2,11 @@
 using System.IO;
 using AutomatedCodeGeneration.Models;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace AutomatedCodeGeneration.Tests
 {
     public class HelperTests
     {
-        private readonly ITestOutputHelper _output;
-
-        public HelperTests(ITestOutputHelper output)
-        {
-            _output = output;
-        }
-
         [Theory]
         [InlineData("CSharp")]
         [InlineData("CSharP")]
