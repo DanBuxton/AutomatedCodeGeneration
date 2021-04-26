@@ -159,7 +159,7 @@ namespace AutomatedCodeGeneration.DataLayer.Tests
 
                 var hasNamespace = !string.IsNullOrEmpty(ns);
 
-                var expected = "";
+                var expected = hasNamespace ? $"package {ns};{newLine}{newLine}" : "";
 
                 if (imports.Length > 0)
                 {
@@ -168,12 +168,6 @@ namespace AutomatedCodeGeneration.DataLayer.Tests
 
                 var i = 0;
 
-                if (hasNamespace)
-                {
-                    expected += $"namespace {ns}{newLine}{{{newLine}";
-                    expected = Indent(expected, indent, ++i);
-                }
-
                 expected += $"{access.AsLowerString()} class {name}{newLine}";
                 expected = Indent(expected, indent, i);
                 expected += $"{{{newLine}";
@@ -181,11 +175,6 @@ namespace AutomatedCodeGeneration.DataLayer.Tests
                 expected += $"{newLine}";
                 expected = Indent(expected, indent, --i);
                 expected += "}";
-
-                if (hasNamespace)
-                {
-                    expected += $"{newLine}}}";
-                }
 
 #if DEBUG
                 _output.WriteLine($"Expected:\n\n{expected}");
@@ -214,7 +203,7 @@ namespace AutomatedCodeGeneration.DataLayer.Tests
 
                 var hasNamespace = !string.IsNullOrEmpty(ns);
 
-                var expected = "";
+                var expected = hasNamespace ? $"package {ns};{newLine}{newLine}" : "";
 
                 if (imports.Length > 0)
                 {
@@ -223,12 +212,6 @@ namespace AutomatedCodeGeneration.DataLayer.Tests
 
                 var i = 0;
 
-                if (hasNamespace)
-                {
-                    expected += $"namespace {ns}{newLine}{{{newLine}";
-                    expected = Indent(expected, indent, ++i);
-                }
-
                 expected += $"{access.AsLowerString()} interface {name}{newLine}";
                 expected = Indent(expected, indent, i);
                 expected += $"{{{newLine}";
@@ -236,11 +219,6 @@ namespace AutomatedCodeGeneration.DataLayer.Tests
                 expected += $"{newLine}";
                 expected = Indent(expected, indent, --i);
                 expected += "}";
-
-                if (hasNamespace)
-                {
-                    expected += $"{newLine}}}";
-                }
 
 #if DEBUG
                 _output.WriteLine($"{result.FileName}.{result.FileExt}");

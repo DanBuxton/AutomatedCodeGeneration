@@ -16,19 +16,14 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.Java
             StringBuilder builder = new();
             var currentIndent = 0;
 
-            if (Imports.Count > 0)
-            {
-                Imports.ForEach(import =>
-                {
-                    builder.Append($"import {import};{NewLine}");
-                });
-                builder.Append(NewLine);
-            }
-
             if (!string.IsNullOrWhiteSpace(Namespace))
             {
-                builder.Append($"namespace {Namespace}{NewLine}{{{NewLine}");
-                currentIndent++;
+                builder.Append($"package {Namespace};{NewLine}{NewLine}");
+            }
+
+            if (Imports.Count > 0)
+            {
+                builder.Append("import " + string.Join($";{NewLine}import ", Imports) + $";{NewLine}{NewLine}");
             }
 
             ClassAttributes.ForEach(attr =>
@@ -75,9 +70,7 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.Java
             IndentStringBuilder(builder, currentIndent);
             builder.Append(NewLine);
             IndentStringBuilder(builder, --currentIndent);
-            builder.Append($"}}{(string.IsNullOrWhiteSpace(Namespace) ? "" : NewLine)}");
-
-            return string.IsNullOrWhiteSpace(Namespace) ? builder : builder.Append('}');
+            return builder.Append("}");
         }
     }
 }
