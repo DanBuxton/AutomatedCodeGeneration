@@ -33,6 +33,7 @@ namespace AutomatedCodeGeneration.DataLayer
             Helper.GetLanguage(language) switch
             {
                 Enums.Languages.CSharp => new CSharpStrategy(),
+                Enums.Languages.Java => new JavaStrategy(),
                 _ => throw new InvalidOperationException($"Generation not supported for {language}")
             };
 
@@ -45,25 +46,28 @@ namespace AutomatedCodeGeneration.DataLayer
         {
             return await Task.Run(async () =>
             {
+                // Check database is running
                 if (!DbOk)
                     return null;
 
-                var system = await GetSystem(_id);// ?? GetModel();
+                // Get the system from database and map to models - Entity Framework ORM
+                var system = await GetSystem(_id);
 
+                // Check the system is found
                 if (system is null)
                     throw new InvalidOperationException("Can't find Id");
 
+                // Instantiate a language manager to use the system model from the database
                 LanguageManager mgr = new(system);
 
+                // Set the language manager's language strategy based on constructor setup
                 mgr.SetLanguageHandler(_languageStrategy);
+
+                // Set target output for the generated system
                 mgr.SetOutputHandler(_output);
 
-                //IOutputHandler handler = _output.ToLower().StartsWith("github: ")
-                //    ? new GithubHandler()
-                //    : new FileHandler();
-
+                // Generate and output code files based on requested language and output
                 return mgr.OutputFiles(cancellationToken);
-
             }, cancellationToken);
         }
     }
