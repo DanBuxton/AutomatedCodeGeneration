@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace AutomatedCodeGeneration.Tests
 {

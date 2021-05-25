@@ -2,7 +2,10 @@
 using AutomatedCodeGeneration.DataLayer.Files.Builders.CSharp;
 using AutomatedCodeGeneration.DataLayer.Files.Builders.Java;
 using Xunit;
+
+#if DEBUG
 using Xunit.Abstractions;
+#endif
 
 namespace AutomatedCodeGeneration.DataLayer.Tests
 {
