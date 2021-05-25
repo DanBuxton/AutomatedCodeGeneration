@@ -1,29 +1,31 @@
 ﻿using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
 using AutomatedCodeGeneration.DataLayer.Files.Abstractions;
 using AutomatedCodeGeneration.DataLayer.Files.Builders.CSharp;
-using AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp;
+using AutomatedCodeGeneration.DataLayer.Files.Builders.Java;
 
-namespace AutomatedCodeGeneration.DataLayer.Managers.Strategy
+namespace AutomatedCodeGeneration.DataLayer.Managers.LanguageStrategy
 {
-    public class CSharpStrategy : Strategy
+    public class JavaStrategy : Strategy
     {
         protected override IClassFile GenerateClassFile(ClassModel model)
         {
-            return new CSharpClassFileBuilder()
+            return new JavaClassFileBuilder()
+                .WithNamespace(model.Namespace)
                 .WithAccess(model.Access)
                 .WithName(model.Name)
-                .WithNamespace(model.Namespace)
-                .WithMethods(model.Methods)
                 .WithFieldsAndProperties(model.Data)
-                .Build() as CSharpClassFileModel;
+                .WithMethods(model.Methods)
+                .WithRelations(model.Relations)
+                .Build() as IClassFile;
         }
 
         protected override IInterfaceFile GenerateInterfaceFile(ClassModel model)
         {
-            return new CSharpInterfaceFileBuilder()
+            return new JavaInterfaceFileBuilder()
                 .WithNamespace(model.Namespace)
                 .WithAccess(model.Access)
                 .WithName(model.Name)
+                .WithMethods(model.Methods)
                 .Build() as IInterfaceFile;
         }
     }

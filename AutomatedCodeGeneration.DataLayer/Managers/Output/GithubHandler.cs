@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 #endif
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutomatedCodeGeneration.DataLayer.Files.Abstractions;
@@ -13,60 +15,68 @@ namespace AutomatedCodeGeneration.DataLayer.Managers.Output
 {
     public sealed class GithubHandler : IOutputHandler
     {
-        public string OutputDetails { get; set; }
+        private readonly string _systemId;
+        public string OutputDetails { get; }
 
-        public GithubHandler(string outputDetails)
+        public GithubHandler(string code, string systemId)
         {
-            OutputDetails = outputDetails;
+            _systemId = systemId;
+            OutputDetails = code;
         }
         
-        private static IGitHubClient GetGithubClient(string token)
+        private static async Task<GitHubClient> GetGithubClient(string code)
         {
-            //const string appClientId = "97ce255accacf4d16e86";//, appClientSecret = "e8fb5ce22f33011c957ea335897fbf7b741405b2";
-            var client = new GitHubClient(new ProductHeaderValue("Automated Code Generation"));
-            var tokenAuth = new Credentials(token, AuthenticationType.Bearer);
-            client.Credentials = tokenAuth;
+            //Potentially need user consent to generate the required code.
 
+            //TODO: Store in some form of secret
+            const string appClientId = "97ce255accacf4d16e86", appClientSecret = "e8fb5ce22f33011c957ea335897fbf7b741405b2";
+
+            var client = new GitHubClient(new ProductHeaderValue("AutomatedCodeGeneration"));
+
+            var result = await client.Oauth.CreateAccessToken(new OauthTokenRequest(appClientId, appClientSecret, code));
+            
+            client.Credentials = new Credentials(result.AccessToken, AuthenticationType.Bearer);
+            
             return client;
         }
 
         public async Task<bool> Output(IList<IFileModel> files, CancellationToken token)
         {
-            const string appClientId = "97ce255accacf4d16e86";//, appClientSecret = "e8fb5ce22f33011c957ea335897fbf7b741405b2";
-
-            var client = GetGithubClient(OutputDetails);
-
-#if DEBUG
-            Debug.WriteLine($"Scopes: {string.Join(", ", (await client.Authorization.CheckApplicationAuthentication(appClientId, OutputDetails)).Scopes)}");
-#endif
+            var client = await GetGithubClient(OutputDetails);
 
             var user = await client.User.Current();
 
-            if (!user.Type.HasValue) return false;
-
-
-            switch (user.Type.Value)
+            switch (user.Type)
             {
                 case AccountType.Organization:
                 case AccountType.User:
                     var clientRepo = client.Repository;
 
-                    //TODO: Use systemId in repository name
-                    var repo = await clientRepo.Create(new NewRepository("name")
+                    var repo = await clientRepo.Create(new NewRepository($"AutoCodeGeneration_{_systemId}_{files.First().FileExt}")
                     {
+                        Private = true,
+                        Homepage = "https://autocodegen.danbuxton.co.uk",
+                        Description = "Created using AutomatedCodeGeneration",
                         HasDownloads = false,
                         HasIssues = false,
-                        HasWiki = false,
-                        Visibility = RepositoryVisibility.Private
+                        HasWiki = false
                     });
+                    
+                    var author = new Committer("Automated Code Generator", "autocodegen@danbuxton.co.uk", new DateTimeOffset(new DateTime(2021, 5, 25, 23, 59, 59)));
+                    
+                    await Task.Run(async () =>
+                    {
 
-                    var author = new Committer("Automated-Code-Generation", "dan.buxton99@gmail.com", new DateTimeOffset(new DateTime(2021, 5, 11, new GregorianCalendar())));
 
-                    var createFile = await clientRepo.Content.CreateFile(repo.Id, "/", new CreateFileRequest("", "") { Author = author });
-
-
+                        foreach (var file in files)
+                        {
+                            await clientRepo.Content.CreateFile(repo.Id, $"{file.FileName}.{file.FileExt}", new CreateFileRequest($"Generated {file.FileName}", file.Generate().ToString()) { Author = author });
+                        }
+                    },token);
 
                     return true;
+                case AccountType.Bot:
+                    throw new IOException("Account type not supported");
                 default: return false;
             }
         }

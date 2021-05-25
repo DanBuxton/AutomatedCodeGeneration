@@ -5,7 +5,7 @@ using AutomatedCodeGeneration.DataLayer.Diagrams;
 using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
 using AutomatedCodeGeneration.DataLayer.Files.Abstractions;
 
-namespace AutomatedCodeGeneration.DataLayer.Managers.Strategy
+namespace AutomatedCodeGeneration.DataLayer.Managers.LanguageStrategy
 {
     public abstract class Strategy
     {
@@ -13,7 +13,7 @@ namespace AutomatedCodeGeneration.DataLayer.Managers.Strategy
 
         protected abstract IInterfaceFile GenerateInterfaceFile(ClassModel model);
 
-        public virtual IInterfaceFile GenerateEnumFile(ClassModel model) => null;
+        protected virtual IFileModel GenerateEnumFile(ClassModel model) => null;
 
         private IFileModel GenerateFile(ClassModel model) =>
             model.Type switch

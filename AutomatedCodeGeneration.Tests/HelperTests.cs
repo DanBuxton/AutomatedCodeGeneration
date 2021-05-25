@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using AutomatedCodeGeneration.Models;
 using Xunit;
 
 namespace AutomatedCodeGeneration.Tests

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using AutomatedCodeGeneration.DataLayer;
 using Xunit;
 
 namespace AutomatedCodeGeneration.Tests
@@ -10,7 +9,7 @@ namespace AutomatedCodeGeneration.Tests
         [Fact]
         public void Id_Get_Test()
         {
-            SystemInfo systemInfo = new(Guid.Empty, "CSharp");
+            var systemInfo = Helper.CreateSystemInfo(Guid.Empty, "CSharp", null);
 
             Assert.Equal(Guid.Empty, systemInfo.Id);
         }
@@ -18,7 +17,7 @@ namespace AutomatedCodeGeneration.Tests
         [Fact]
         public void Language_Get_Test()
         {
-            SystemInfo systemInfo = new(Guid.Empty, "CSharp");
+            var systemInfo = Helper.CreateSystemInfo(Guid.Empty, "CSharp", null);
 
             Assert.Equal("CSharp", systemInfo.TargetLanguage);
         }
@@ -26,7 +25,7 @@ namespace AutomatedCodeGeneration.Tests
         [Fact]
         public void Empty_Output_Get_Test()
         {
-            SystemInfo systemInfo = new(Guid.Empty, "CSharp");
+            var systemInfo = Helper.CreateSystemInfo(Guid.Empty, "CSharp", null);
 
             Assert.Equal(Directory.GetCurrentDirectory(), systemInfo.Output);
         }
@@ -36,7 +35,7 @@ namespace AutomatedCodeGeneration.Tests
         [InlineData(null)]
         public void Output_Get_Test(string output)
         {
-            SystemInfo systemInfo = new(Guid.Empty, "CSharp", output);
+            var systemInfo = Helper.CreateSystemInfo(Guid.Empty, "CSharp", output);
 
             Assert.Equal(output ?? Directory.GetCurrentDirectory(), systemInfo.Output);
         }
@@ -47,8 +46,7 @@ namespace AutomatedCodeGeneration.Tests
         public void Deconstruct_Test(string id, string lang, string output = null)
         {
             var goodId = Guid.Parse(id);
-
-            var (actualId, actualLang, actualOutput) = new SystemInfo(goodId, lang, output);
+            var (actualId, actualLang, actualOutput) = Helper.CreateSystemInfo(goodId, lang, output);
 
             Assert.Equal(goodId, actualId);
             Assert.Equal(lang, actualLang);

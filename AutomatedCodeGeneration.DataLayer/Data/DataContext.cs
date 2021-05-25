@@ -14,7 +14,7 @@ namespace AutomatedCodeGeneration.DataLayer.Data
         }
 
         public DbSet<SystemModel> Systems { get; set; }
-        public DbSet<UseCaseModel> UseCases { get; set; }
+        //public DbSet<UseCaseModel> UseCases { get; set; }
         public DbSet<ClassModel> Classes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
+using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
 
 namespace AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp
 {
@@ -47,8 +48,25 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp
             }
 
             IndentStringBuilder(builder, currentIndent);
-            builder.Append($"{ClassAccess} class {ClassName}{NewLine}");
-            IndentStringBuilder(builder, currentIndent++);
+            builder.Append($"{ClassAccess} class {FileName}");
+
+            if (Relations.Any(r=>r.RelationType == ClassRelationType.Inheritance))
+            {
+                builder.Append(" :");
+            }
+
+            if (Relations.Any(r => r.RelationType == ClassRelationType.Inheritance && r.Target.Type == FileType.Class))
+            {
+                builder.Append(
+                    $" {Relations.First(r=>r.RelationType == ClassRelationType.Inheritance && r.Target.Type == FileType.Class).Target.Name}");
+            }
+
+            if (Relations.Any(r => r.RelationType == ClassRelationType.Inheritance && r.Target.Type == FileType.Interface))
+            {
+                builder.Append(" " + string.Join(", ", Relations.Where(r => r.RelationType == ClassRelationType.Inheritance && r.Target.Type == FileType.Interface).Select(x=>x.Target.Name)));
+            }
+
+            IndentStringBuilder(builder.Append(NewLine), currentIndent++);
             builder.Append($"{{{NewLine}");
 
             FieldsAndProperties.ForEach(d =>

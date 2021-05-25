@@ -15,5 +15,7 @@ namespace AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram
         public Enums.AccessType Access { get; set; }
 
         public FileType Type { get; set; } = FileType.Class;
+
+        public virtual List<ClassRelationModel> Relations { get; set; } = new();
     }
 }

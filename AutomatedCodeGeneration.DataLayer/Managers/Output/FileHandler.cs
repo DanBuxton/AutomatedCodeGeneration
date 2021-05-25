@@ -28,7 +28,7 @@ namespace AutomatedCodeGeneration.DataLayer.Managers.Output
 
                     if (file is ClassFileModel c)
                     {
-                        filePath += $@"\{c.ClassName}.{c.FileExt}";
+                        filePath += $@"\{c.FileName}.{c.FileExt}";
                     }
                     else
                     {
