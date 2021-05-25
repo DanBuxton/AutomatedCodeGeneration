@@ -1,40 +1,29 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using AutomatedCodeGeneration.DataLayer;
 
 namespace AutomatedCodeGeneration
 {
-    public sealed record SystemGenerator
+    public abstract record SystemGenerator
     {
+        //Force no instances
+        private SystemGenerator() { }
+
         public static async Task<Result> CreateSystem(SystemInfo systemInfo, CancellationToken cancellationToken = default)
         {
             try
             {
-#if DEBUG
-                System.Diagnostics.Stopwatch sw = new();
-                sw.Start();
-#endif
-
-                var systemBuilder = new SystemBuilder(systemInfo);
-
-                var result = await systemBuilder.CreateSystem(cancellationToken);
-
-#if DEBUG
-                sw.Stop();
-
-                Console.WriteLine($"Completed in: {sw.Elapsed.TotalMilliseconds}ms");
-#endif
-
-                return new Result((result as Exception)?.Message);
+                //Generate and output the system
+                var result = await SystemBuilder.CreateSystem(systemInfo, cancellationToken);
+                
+                //Either error message or null
+                return new Result(result?.Message);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-#if DEBUG
-                return new Result(e.Message);
-#elif RELEASE
-                    return new Result("Sorry, there was an error generating your code!");
-#endif
+                return new Result("Sorry, there was an error generating your code!");
             }
         }
 
@@ -42,7 +31,7 @@ namespace AutomatedCodeGeneration
         {
             public bool HasError => Error != null;
 
-            public string Error { get; set; }
+            public string Error { get; }
 
             public Result(string error = null)
             {

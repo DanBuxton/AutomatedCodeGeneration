@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
+using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
 
 namespace AutomatedCodeGeneration.DataLayer.Files.Languages.Java
 {
@@ -23,7 +24,7 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.Java
 
             if (Imports.Count > 0)
             {
-                builder.Append("import " + string.Join($";{NewLine}import ", Imports) + $";{NewLine}{NewLine}");
+                builder.Append("import " + string.Join($";{NewLine}import ", Imports.Where(i => !i.Equals(Namespace))) + $";{NewLine}{NewLine}");
             }
 
             ClassAttributes.ForEach(attr =>
@@ -34,8 +35,20 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.Java
             });
 
             IndentStringBuilder(builder, currentIndent);
-            builder.Append($"{ClassAccess} class {ClassName}{NewLine}");
-            IndentStringBuilder(builder, currentIndent++);
+            builder.Append($"{ClassAccess} class {FileName}");
+
+            if (Relations.Any(r => r.RelationType == ClassRelationType.Inheritance && r.Target.Type == FileType.Class))
+            {
+                builder.Append(
+                    $" extends {Relations.First(r => r.RelationType == ClassRelationType.Inheritance && r.Target.Type == FileType.Class).Target.Name}");
+            }
+
+            if (Relations.Any(r => r.RelationType == ClassRelationType.Inheritance && r.Target.Type == FileType.Interface))
+            {
+                builder.Append(" implements " + string.Join(", ", Relations.Where(r => r.RelationType == ClassRelationType.Inheritance && r.Target.Type == FileType.Interface).Select(x=>x.Target.Name)));
+            }
+
+            IndentStringBuilder(builder.Append(NewLine), currentIndent++);
             builder.Append($"{{{NewLine}");
 
             FieldsAndProperties.ForEach(d =>
@@ -70,7 +83,7 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.Java
             IndentStringBuilder(builder, currentIndent);
             builder.Append(NewLine);
             IndentStringBuilder(builder, --currentIndent);
-            return builder.Append("}");
+            return builder.Append('}');
         }
     }
 }

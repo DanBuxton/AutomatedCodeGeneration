@@ -1,33 +1,20 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutomatedCodeGeneration.DataLayer.Data;
+using AutomatedCodeGeneration.DataLayer.Diagrams;
+using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
 using AutomatedCodeGeneration.DataLayer.Managers;
+using AutomatedCodeGeneration.DataLayer.Managers.LanguageStrategy;
 using AutomatedCodeGeneration.DataLayer.Managers.Output;
-using AutomatedCodeGeneration.DataLayer.Managers.Strategy;
 
 namespace AutomatedCodeGeneration.DataLayer
 {
-    public sealed class SystemBuilder : DataAccess
+    public abstract class SystemBuilder : DataAccess
     {
-        private readonly Guid _id;
-        private readonly IOutputHandler _output;
-
-        private readonly Strategy _languageStrategy;
-
-        public SystemBuilder(SystemInfo systemInfo)
-        {
-            // Only need to know the system id outside of this method
-            var (id, lang, output) = systemInfo;
-            _id = id;
-
-            _languageStrategy = GetLanguageStrategy(lang);
-#if DEBUG
-            _output = new FileHandler(output);
-#elif RELEASE
-            _output = new GithubHandler(output);
-#endif
-        }
+        private SystemBuilder() { }
 
         private static Strategy GetLanguageStrategy(string language) =>
             Helper.GetLanguage(language) switch
@@ -37,21 +24,25 @@ namespace AutomatedCodeGeneration.DataLayer
                 _ => throw new InvalidOperationException($"Generation not supported for {language}")
             };
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<object> CreateSystem(CancellationToken cancellationToken)
+        public static async Task<IOException> CreateSystem(SystemInfo systemInfo, CancellationToken cancellationToken)
         {
-            return await Task.Run(async () =>
+            try
             {
+                // Deconstruct the system information into usable variables
+                var (id, lang, output) = systemInfo;
+
+                var languageStrategy = GetLanguageStrategy(lang);
+
+                IOutputHandler outputHandler = output[..8].Equals("github::")
+                    ? new GithubHandler(output[8..], id.ToString())
+                    : new FileHandler(output);
+
                 // Check database is running
                 if (!DbOk)
                     return null;
 
                 // Get the system from database and map to models - Entity Framework ORM
-                var system = await GetSystem(_id);
+                var system = await GetSystem(id);
 
                 // Check the system is found
                 if (system is null)
@@ -61,14 +52,38 @@ namespace AutomatedCodeGeneration.DataLayer
                 LanguageManager mgr = new(system);
 
                 // Set the language manager's language strategy based on constructor setup
-                mgr.SetLanguageHandler(_languageStrategy);
+                mgr.SetLanguageHandler(languageStrategy);
 
                 // Set target output for the generated system
-                mgr.SetOutputHandler(_output);
+                mgr.SetOutputHandler(outputHandler);
 
                 // Generate and output code files based on requested language and output
-                return mgr.OutputFiles(cancellationToken);
-            }, cancellationToken);
+                var isOk = await mgr.OutputFiles(cancellationToken);
+
+                if (isOk)
+                {
+#if DEBUG
+                    if (id.Equals(new Guid("0a866869-1bc1-4ac6-c627-08d91fb3b958")) || id.Equals(new Guid("21189b61-44e8-444c-16f8-08d91fb46754")))
+                    {
+                        return null;
+                    }
+#endif
+
+                    //Update database
+                    await MarkSystemAsGenerated(system.Id);
+
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                //throw;
+                return new IOException(e.Message, e);
+            }
+
+            return new IOException("There was an issue completing your request");
         }
+
+        public static async Task<Guid> CreateSystem(SystemModel model) => (await AddSystem(model)).Id;
     }
 }

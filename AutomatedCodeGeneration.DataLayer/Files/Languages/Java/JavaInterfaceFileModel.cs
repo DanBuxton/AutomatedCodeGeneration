@@ -54,7 +54,7 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.Java
             IndentStringBuilder(builder, currentIndent);
             builder.Append(NewLine);
             IndentStringBuilder(builder, --currentIndent);
-            return builder.Append("}");
+            return builder.Append('}');
         }
     }
 }

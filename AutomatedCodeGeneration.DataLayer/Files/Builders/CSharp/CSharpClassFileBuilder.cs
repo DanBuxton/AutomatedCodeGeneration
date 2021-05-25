@@ -18,7 +18,8 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Builders.CSharp
 
         public IClassFileBuilder WithImports([NotNull] List<string> imports)
         {
-            _model.Imports = imports.ToList();
+            imports.Add("System");
+            _model.Imports = imports.RemoveDuplicates();
 
             return this;
         }
@@ -32,7 +33,7 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Builders.CSharp
 
         public IClassFileBuilder WithAttributes(List<string> attributes)
         {
-            _model.ClassAttributes = attributes;
+            _model.ClassAttributes = attributes.RemoveDuplicates();
 
             return this;
         }
@@ -46,28 +47,38 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Builders.CSharp
 
         public IClassFileBuilder WithName(string name)
         {
-            _model.ClassName = name;
+            _model.FileName = name;
 
             return this;
         }
 
         public IClassFileBuilder WithFieldsAndProperties(List<ClassDataModel> fieldsAndProperties)
         {
-            _model.FieldsAndProperties = fieldsAndProperties;
+            _model.FieldsAndProperties = fieldsAndProperties.RemoveDuplicates();
 
             return this;
         }
 
         public IClassFileBuilder WithConstructors(List<ClassMethodModel> constructors)
         {
-            _model.Constructors = constructors;
+            _model.Constructors = constructors.RemoveDuplicates();
 
             return this;
         }
 
         public IClassFileBuilder WithMethods(List<ClassMethodModel> methods)
         {
-            _model.Methods = methods;
+            _model.Methods = methods.RemoveDuplicates();
+
+            return this;
+        }
+
+        public IClassFileBuilder WithRelations(List<ClassRelationModel> relations)
+        {
+            var list = new List<string>(_model.Imports);
+            list.AddRange(relations.Select(r => r.Target.Namespace));
+
+            WithImports(list);
 
             return this;
         }

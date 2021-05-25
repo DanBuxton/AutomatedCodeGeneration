@@ -49,39 +49,6 @@ namespace AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp
             IndentStringBuilder(builder, currentIndent++);
             builder.Append($"{{{NewLine}");
 
-            //FieldsAndProperties.Where(d=>d.Access == Enums.AccessType.Private).ToList().ForEach(f =>
-            //{
-            //    IndentStringBuilder(builder, currentIndent);
-
-            //    if (f.NameType.IsStatic)
-            //    {
-            //        builder.Append($"private static {f.NameType.Type} {f.NameType.Name.ToUpper()};");
-            //    }
-            //    else
-            //    {
-            //        builder.Append($"private {f.NameType.Type} _{f.NameType.Name[0].ToString().ToLower()}{f.NameType.Name[1..]};");
-            //    }
-            //});
-
-            //FieldsAndProperties.ForEach(d =>
-            //{
-            //    var removed = new List<ClassMethodModel>();
-
-            //    foreach (var m in Methods)
-            //    {
-            //        Debug.WriteLine(m.NameType.Name[2..]);
-
-            //        if (!m.NameType.Name[2..].Equals(d.NameType.Name)) continue;
-
-            //        if (!removed.Contains(m))
-            //        {
-            //            removed.Add(m);
-            //        }
-
-            //        Methods.Remove(m);
-            //    }
-            //});
-
             Methods.ForEach(m =>
             {
                 IndentStringBuilder(builder, currentIndent);
