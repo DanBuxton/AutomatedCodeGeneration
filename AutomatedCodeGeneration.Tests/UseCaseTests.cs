@@ -21,11 +21,6 @@ namespace AutomatedCodeGeneration.Tests
 
             var result = await SystemGenerator.CreateSystem(Helper.CreateSystemInfo(goodId, lang, output));
 
-
-            Assert.True(result.HasError);
-
-            return;
-
             if (!Helper.LanguageExists(lang).HasValue || output != null && output.Equals("."))
             {
                 Assert.True(result.HasError);
