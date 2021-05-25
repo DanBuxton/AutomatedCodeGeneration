@@ -43,6 +43,10 @@ namespace AutomatedCodeGeneration.DataLayer.Tests
                 {
                     expected = $"using {string.Join($";{newLine}using ", imports)};{newLine}{newLine}";
                 }
+                else
+                {
+                    expected = $"using System;{newLine}{newLine}";
+                }
 
                 var i = 0;
 
@@ -121,7 +125,6 @@ namespace AutomatedCodeGeneration.DataLayer.Tests
                 }
 
 #if DEBUG
-                _output.WriteLine($"{result.FileName}.{result.FileExt}");
                 _output.WriteLine($"Expected:\n\n{expected}");
                 _output.WriteLine($"Result:\n\n{result.Generate()}");
 #endif
