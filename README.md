@@ -1,5 +1,8 @@
 # Automated Code Generation
 
+[![CI](https://github.com/DanBuxton/AutomatedCodeGeneration/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/DanBuxton/AutomatedCodeGeneration/actions/workflows/continuous-integration.yml)
+[![CodeQL](https://github.com/DanBuxton/AutomatedCodeGeneration/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/DanBuxton/AutomatedCodeGeneration/actions/workflows/codeql-analysis.yml)
+
 <!--**This project was submitted in partial fulfillment of the award of the degree of BSc Software Engineering (Final Year Project)**-->
 
 Turns UML documentation, in the form of SQL, into code and uploads to a given users GitHub.
