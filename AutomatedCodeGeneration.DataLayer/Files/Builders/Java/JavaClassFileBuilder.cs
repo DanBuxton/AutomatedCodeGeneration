@@ -5,86 +5,85 @@ using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
 using AutomatedCodeGeneration.DataLayer.Files.Abstractions;
 using AutomatedCodeGeneration.DataLayer.Files.Languages.Java;
 
-namespace AutomatedCodeGeneration.DataLayer.Files.Builders.Java
+namespace AutomatedCodeGeneration.DataLayer.Files.Builders.Java;
+
+public class JavaClassFileBuilder : IClassFileBuilder
 {
-    public class JavaClassFileBuilder : IClassFileBuilder
+    private readonly JavaClassFileModel _model;
+
+    public JavaClassFileBuilder(string indent = "\t", string newLine = "\n")
     {
-        private readonly JavaClassFileModel _model;
+        _model = new JavaClassFileModel(indent, newLine);
+    }
 
-        public JavaClassFileBuilder(string indent = "\t", string newLine = "\n")
-        {
-            _model = new JavaClassFileModel(indent, newLine);
-        }
+    public IClassFileBuilder WithImports([NotNull] List<string> imports)
+    {
+        _model.Imports = imports.RemoveDuplicates();
 
-        public IClassFileBuilder WithImports([NotNull] List<string> imports)
-        {
-            _model.Imports = imports.RemoveDuplicates();
+        return this;
+    }
 
-            return this;
-        }
+    public IClassFileBuilder WithNamespace(string ns)
+    {
+        _model.Namespace = ns;
 
-        public IClassFileBuilder WithNamespace(string ns)
-        {
-            _model.Namespace = ns;
+        return this;
+    }
 
-            return this;
-        }
+    public IClassFileBuilder WithAttributes(List<string> attributes)
+    {
+        _model.ClassAttributes = attributes.RemoveDuplicates();
 
-        public IClassFileBuilder WithAttributes(List<string> attributes)
-        {
-            _model.ClassAttributes = attributes.RemoveDuplicates();
+        return this;
+    }
 
-            return this;
-        }
+    public IClassFileBuilder WithAccess(Enums.AccessType access)
+    {
+        _model.ClassAccess = access.AsLowerString();
 
-        public IClassFileBuilder WithAccess(Enums.AccessType access)
-        {
-            _model.ClassAccess = access.AsLowerString();
+        return this;
+    }
 
-            return this;
-        }
+    public IClassFileBuilder WithName(string name)
+    {
+        _model.FileName = name;
 
-        public IClassFileBuilder WithName(string name)
-        {
-            _model.FileName = name;
+        return this;
+    }
 
-            return this;
-        }
+    public IClassFileBuilder WithFieldsAndProperties(List<ClassDataModel> fieldsAndProperties)
+    {
+        _model.FieldsAndProperties = fieldsAndProperties.RemoveDuplicates();
 
-        public IClassFileBuilder WithFieldsAndProperties(List<ClassDataModel> fieldsAndProperties)
-        {
-            _model.FieldsAndProperties = fieldsAndProperties.RemoveDuplicates();
+        return this;
+    }
 
-            return this;
-        }
+    public IClassFileBuilder WithConstructors(List<ClassMethodModel> constructors)
+    {
+        _model.Constructors = constructors.RemoveDuplicates();
 
-        public IClassFileBuilder WithConstructors(List<ClassMethodModel> constructors)
-        {
-            _model.Constructors = constructors.RemoveDuplicates();
+        return this;
+    }
 
-            return this;
-        }
+    public IClassFileBuilder WithMethods(List<ClassMethodModel> methods)
+    {
+        _model.Methods = methods.RemoveDuplicates();
 
-        public IClassFileBuilder WithMethods(List<ClassMethodModel> methods)
-        {
-            _model.Methods = methods.RemoveDuplicates();
+        return this;
+    }
 
-            return this;
-        }
+    public IClassFileBuilder WithRelations(List<ClassRelationModel> relations)
+    {
+        var list = new List<string>(_model.Imports);
+        list.AddRange(relations.Select(r => r.Target.Namespace));
 
-        public IClassFileBuilder WithRelations(List<ClassRelationModel> relations)
-        {
-            var list = new List<string>(_model.Imports);
-            list.AddRange(relations.Select(r => r.Target.Namespace));
+        WithImports(list);
 
-            WithImports(list);
+        return this;
+    }
 
-            return this;
-        }
-
-        public IFileModel Build()
-        {
-            return _model;
-        }
+    public IFileModel Build()
+    {
+        return _model;
     }
 }

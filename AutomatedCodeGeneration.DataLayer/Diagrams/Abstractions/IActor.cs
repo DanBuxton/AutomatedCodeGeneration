@@ -1,7 +1,6 @@
-﻿namespace AutomatedCodeGeneration.DataLayer.Diagrams.Abstractions
+﻿namespace AutomatedCodeGeneration.DataLayer.Diagrams.Abstractions;
+
+internal interface IActor
 {
-    internal interface IActor
-    {
-        string Name { get; set; }
-    }
+    string Name { get; set; }
 }

@@ -1,7 +1,6 @@
-﻿namespace AutomatedCodeGeneration.DataLayer.Files.Abstractions
+﻿namespace AutomatedCodeGeneration.DataLayer.Files.Abstractions;
+
+public interface IObjectOrientedFile : IFileModel, IImports
 {
-    public interface IObjectOrientedFile : IFileModel, IImports
-    {
-        
-    }
+    
 }

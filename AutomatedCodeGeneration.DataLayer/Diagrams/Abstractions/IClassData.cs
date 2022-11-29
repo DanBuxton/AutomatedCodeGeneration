@@ -1,8 +1,7 @@
-﻿namespace AutomatedCodeGeneration.DataLayer.Diagrams.Abstractions
+﻿namespace AutomatedCodeGeneration.DataLayer.Diagrams.Abstractions;
+
+internal interface IClassData
 {
-    internal interface IClassData
-    {
-        NameTypeModel NameType { get; init; }
-        Enums.AccessType Access { get; init; }
-    }
+    NameTypeModel NameType { get; init; }
+    Enums.AccessType Access { get; init; }
 }

@@ -1,11 +1,10 @@
-﻿namespace AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram
+﻿namespace AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
+
+public enum ClassRelationType
 {
-    public enum ClassRelationType
-    {
-        Aggregation = 0,
-        Composition = 1,
-        Dependency = 2,
-        Inheritance = 3,
-        DirectedAssociation = 4
-    }
+    Aggregation = 0,
+    Composition = 1,
+    Dependency = 2,
+    Inheritance = 3,
+    DirectedAssociation = 4
 }

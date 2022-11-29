@@ -2,88 +2,87 @@
 using System.Text;
 using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
 
-namespace AutomatedCodeGeneration.DataLayer.Files.Languages.Java
+namespace AutomatedCodeGeneration.DataLayer.Files.Languages.Java;
+
+public class JavaClassFileModel : ClassFileModel
 {
-    public class JavaClassFileModel : ClassFileModel
+    public JavaClassFileModel(string indent = "\t", string newLine = "\n")
     {
-        public JavaClassFileModel(string indent = "\t", string newLine = "\n")
+        Indent = indent;
+        NewLine = newLine;
+        FileExt = "java";
+    }
+    public override StringBuilder Generate()
+    {
+        StringBuilder builder = new();
+        var currentIndent = 0;
+
+        if (!string.IsNullOrWhiteSpace(Namespace))
         {
-            Indent = indent;
-            NewLine = newLine;
-            FileExt = "java";
+            builder.Append($"package {Namespace};{NewLine}{NewLine}");
         }
-        public override StringBuilder Generate()
+
+        if (Imports.Count > 0)
         {
-            StringBuilder builder = new();
-            var currentIndent = 0;
+            builder.Append("import " + string.Join($";{NewLine}import ", Imports.Where(i => !i.Equals(Namespace))) + $";{NewLine}{NewLine}");
+        }
 
-            if (!string.IsNullOrWhiteSpace(Namespace))
-            {
-                builder.Append($"package {Namespace};{NewLine}{NewLine}");
-            }
-
-            if (Imports.Count > 0)
-            {
-                builder.Append("import " + string.Join($";{NewLine}import ", Imports.Where(i => !i.Equals(Namespace))) + $";{NewLine}{NewLine}");
-            }
-
-            ClassAttributes.ForEach(attr =>
-            {
-                IndentStringBuilder(builder, currentIndent);
-
-                builder.Append($"{attr}{NewLine}");
-            });
-
+        ClassAttributes.ForEach(attr =>
+        {
             IndentStringBuilder(builder, currentIndent);
-            builder.Append($"{ClassAccess} class {FileName}");
 
-            if (Relations.Any(r => r.RelationType == ClassRelationType.Inheritance && r.Target.Type == FileType.Class))
-            {
-                builder.Append(
-                    $" extends {Relations.First(r => r.RelationType == ClassRelationType.Inheritance && r.Target.Type == FileType.Class).Target.Name}");
-            }
+            builder.Append($"{attr}{NewLine}");
+        });
 
-            if (Relations.Any(r => r.RelationType == ClassRelationType.Inheritance && r.Target.Type == FileType.Interface))
-            {
-                builder.Append(" implements " + string.Join(", ", Relations.Where(r => r.RelationType == ClassRelationType.Inheritance && r.Target.Type == FileType.Interface).Select(x=>x.Target.Name)));
-            }
+        IndentStringBuilder(builder, currentIndent);
+        builder.Append($"{ClassAccess} class {FileName}");
 
-            IndentStringBuilder(builder.Append(NewLine), currentIndent++);
-            builder.Append($"{{{NewLine}");
+        if (Relations.Any(r => r.RelationType == ClassRelationType.Inheritance && r.Target.Type == FileType.Class))
+        {
+            builder.Append(
+                $" extends {Relations.First(r => r.RelationType == ClassRelationType.Inheritance && r.Target.Type == FileType.Class).Target.Name}");
+        }
 
-            FieldsAndProperties.ForEach(d =>
-            {
+        if (Relations.Any(r => r.RelationType == ClassRelationType.Inheritance && r.Target.Type == FileType.Interface))
+        {
+            builder.Append(" implements " + string.Join(", ", Relations.Where(r => r.RelationType == ClassRelationType.Inheritance && r.Target.Type == FileType.Interface).Select(x=>x.Target.Name)));
+        }
 
-            });
+        IndentStringBuilder(builder.Append(NewLine), currentIndent++);
+        builder.Append($"{{{NewLine}");
 
-            Constructors.ForEach(ctr =>
-            {
-                IndentStringBuilder(builder, currentIndent);
+        FieldsAndProperties.ForEach(d =>
+        {
 
-                builder.Append($"{Helper.ToString(ctr.Access)} {ctr.NameType.Name}({string.Join(", ", ctr.Params.Select(p => $"{p.Type} {p.Name}"))}){{{NewLine}");
-                IndentStringBuilder(builder, ++currentIndent);
-                builder.Append($"{NewLine}");
-                IndentStringBuilder(builder, --currentIndent);
-                builder.Append($"}}{NewLine}");
-            });
-            Methods.ForEach(m =>
-            {
-                IndentStringBuilder(builder, currentIndent);
+        });
 
-                builder.Append($"{Helper.ToString(m.Access)} {m.NameType.Type} {m.NameType.Name}({string.Join(", ", m.Params.Select(p => $"{p.Type} {p.Name}"))}){NewLine}");
-                IndentStringBuilder(builder, currentIndent);
-                builder.Append($"{{{NewLine}");
-                IndentStringBuilder(builder, ++currentIndent);
-                builder.Append($"{NewLine}");
-                IndentStringBuilder(builder, --currentIndent);
-                builder.Append($"}}{NewLine}");
-            });
-
-            //builder.Append(NewLine);
+        Constructors.ForEach(ctr =>
+        {
             IndentStringBuilder(builder, currentIndent);
-            builder.Append(NewLine);
+
+            builder.Append($"{Helper.ToString(ctr.Access)} {ctr.NameType.Name}({string.Join(", ", ctr.Params.Select(p => $"{p.Type} {p.Name}"))}){{{NewLine}");
+            IndentStringBuilder(builder, ++currentIndent);
+            builder.Append($"{NewLine}");
             IndentStringBuilder(builder, --currentIndent);
-            return builder.Append('}');
-        }
+            builder.Append($"}}{NewLine}");
+        });
+        Methods.ForEach(m =>
+        {
+            IndentStringBuilder(builder, currentIndent);
+
+            builder.Append($"{Helper.ToString(m.Access)} {m.NameType.Type} {m.NameType.Name}({string.Join(", ", m.Params.Select(p => $"{p.Type} {p.Name}"))}){NewLine}");
+            IndentStringBuilder(builder, currentIndent);
+            builder.Append($"{{{NewLine}");
+            IndentStringBuilder(builder, ++currentIndent);
+            builder.Append($"{NewLine}");
+            IndentStringBuilder(builder, --currentIndent);
+            builder.Append($"}}{NewLine}");
+        });
+
+        //builder.Append(NewLine);
+        IndentStringBuilder(builder, currentIndent);
+        builder.Append(NewLine);
+        IndentStringBuilder(builder, --currentIndent);
+        return builder.Append('}');
     }
 }

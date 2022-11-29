@@ -1,9 +1,8 @@
 ﻿using AutomatedCodeGeneration.DataLayer.Files.Abstractions;
 
-namespace AutomatedCodeGeneration.DataLayer.Files.Builders
+namespace AutomatedCodeGeneration.DataLayer.Files.Builders;
+
+public interface IFileBuilder
 {
-    public interface IFileBuilder
-    {
-        IFileModel Build();
-    }
+    IFileModel Build();
 }

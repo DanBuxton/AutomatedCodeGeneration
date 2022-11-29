@@ -1,9 +1,8 @@
 ﻿using System.Text;
 
-namespace AutomatedCodeGeneration.DataLayer.Files.Languages
+namespace AutomatedCodeGeneration.DataLayer.Files.Languages;
+
+public interface ILanguageFile
 {
-    public interface ILanguageFile
-    {
-        StringBuilder Generate();
-    }
+    StringBuilder Generate();
 }

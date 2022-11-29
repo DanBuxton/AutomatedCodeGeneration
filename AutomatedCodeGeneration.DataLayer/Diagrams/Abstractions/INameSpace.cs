@@ -1,7 +1,6 @@
-﻿namespace AutomatedCodeGeneration.DataLayer.Diagrams.Abstractions
+﻿namespace AutomatedCodeGeneration.DataLayer.Diagrams.Abstractions;
+
+public interface INamespace
 {
-    public interface INamespace
-    {
-        string Namespace { get; }
-    }
+    string Namespace { get; }
 }

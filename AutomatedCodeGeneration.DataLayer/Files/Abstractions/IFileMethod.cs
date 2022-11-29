@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
 
-namespace AutomatedCodeGeneration.DataLayer.Files.Abstractions
+namespace AutomatedCodeGeneration.DataLayer.Files.Abstractions;
+
+public interface IFileMethod
 {
-    public interface IFileMethod
-    {
-        List<ClassMethodModel> Methods { get; }
-    }
+    List<ClassMethodModel> Methods { get; }
 }

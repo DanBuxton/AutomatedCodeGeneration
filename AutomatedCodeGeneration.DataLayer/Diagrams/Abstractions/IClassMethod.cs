@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace AutomatedCodeGeneration.DataLayer.Diagrams.Abstractions
+namespace AutomatedCodeGeneration.DataLayer.Diagrams.Abstractions;
+
+internal interface IClassMethod
 {
-    internal interface IClassMethod
-    {
-        NameTypeModel NameType { get; init; }
-        Enums.AccessType Access { get; init; }
-        List<NameTypeModel> Params { get; init; }
-    }
+    NameTypeModel NameType { get; init; }
+    Enums.AccessType Access { get; init; }
+    List<NameTypeModel> Params { get; init; }
 }

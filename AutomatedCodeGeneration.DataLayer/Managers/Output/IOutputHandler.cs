@@ -3,12 +3,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutomatedCodeGeneration.DataLayer.Files.Abstractions;
 
-namespace AutomatedCodeGeneration.DataLayer.Managers.Output
-{
-    public interface IOutputHandler
-    {
-        string OutputDetails { get; }
+namespace AutomatedCodeGeneration.DataLayer.Managers.Output;
 
-        Task<bool> Output(IList<IFileModel> files, CancellationToken token);
-    }
+public interface IOutputHandler
+{
+    string OutputDetails { get; }
+
+    Task<bool> Output(IList<IFileModel> files, CancellationToken token);
 }

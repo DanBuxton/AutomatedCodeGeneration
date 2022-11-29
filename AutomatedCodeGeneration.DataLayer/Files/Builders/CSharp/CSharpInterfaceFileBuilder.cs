@@ -5,62 +5,61 @@ using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
 using AutomatedCodeGeneration.DataLayer.Files.Abstractions;
 using AutomatedCodeGeneration.DataLayer.Files.Languages.CSharp;
 
-namespace AutomatedCodeGeneration.DataLayer.Files.Builders.CSharp
+namespace AutomatedCodeGeneration.DataLayer.Files.Builders.CSharp;
+
+public class CSharpInterfaceFileBuilder : IInterfaceFileBuilder
 {
-    public class CSharpInterfaceFileBuilder : IInterfaceFileBuilder
+    private readonly CSharpInterfaceFileModel _model;
+
+    public CSharpInterfaceFileBuilder(string indent = "\t", string newLine = "\n")
     {
-        private readonly CSharpInterfaceFileModel _model;
+        _model = new CSharpInterfaceFileModel(indent, newLine);
+    }
 
-        public CSharpInterfaceFileBuilder(string indent = "\t", string newLine = "\n")
-        {
-            _model = new CSharpInterfaceFileModel(indent, newLine);
-        }
+    public IInterfaceFileBuilder WithImports([NotNull] List<string> imports)
+    {
+        _model.Imports = imports.ToList();
 
-        public IInterfaceFileBuilder WithImports([NotNull] List<string> imports)
-        {
-            _model.Imports = imports.ToList();
+        return this;
+    }
 
-            return this;
-        }
+    public IInterfaceFileBuilder WithNamespace(string ns)
+    {
+        _model.Namespace = ns;
 
-        public IInterfaceFileBuilder WithNamespace(string ns)
-        {
-            _model.Namespace = ns;
+        return this;
+    }
 
-            return this;
-        }
+    public IInterfaceFileBuilder WithAttributes(List<string> attributes)
+    {
+        _model.Attributes = attributes;
 
-        public IInterfaceFileBuilder WithAttributes(List<string> attributes)
-        {
-            _model.Attributes = attributes;
+        return this;
+    }
 
-            return this;
-        }
+    public IInterfaceFileBuilder WithAccess(Enums.AccessType access)
+    {
+        _model.Access = access.AsLowerString();
 
-        public IInterfaceFileBuilder WithAccess(Enums.AccessType access)
-        {
-            _model.Access = access.AsLowerString();
+        return this;
+    }
 
-            return this;
-        }
+    public IInterfaceFileBuilder WithName(string name)
+    {
+        _model.FileName = name;
 
-        public IInterfaceFileBuilder WithName(string name)
-        {
-            _model.FileName = name;
+        return this;
+    }
 
-            return this;
-        }
+    public IInterfaceFileBuilder WithMethods(List<ClassMethodModel> methods)
+    {
+        _model.Methods = methods;
 
-        public IInterfaceFileBuilder WithMethods(List<ClassMethodModel> methods)
-        {
-            _model.Methods = methods;
+        return this;
+    }
 
-            return this;
-        }
-
-        public IFileModel Build()
-        {
-            return _model;
-        }
+    public IFileModel Build()
+    {
+        return _model;
     }
 }

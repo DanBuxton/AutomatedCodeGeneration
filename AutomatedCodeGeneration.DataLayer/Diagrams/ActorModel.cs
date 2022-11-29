@@ -1,12 +1,11 @@
 ﻿using System;
 using AutomatedCodeGeneration.DataLayer.Diagrams.Abstractions;
 
-namespace AutomatedCodeGeneration.DataLayer.Diagrams
-{
-    public class ActorModel : IActor
-    {
-        public Guid Id { get; set; }
+namespace AutomatedCodeGeneration.DataLayer.Diagrams;
 
-        public string Name { get; set; }
-    }
+public class ActorModel : IActor
+{
+    public Guid Id { get; set; }
+
+    public string Name { get; set; }
 }

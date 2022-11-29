@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using AutomatedCodeGeneration.DataLayer.Diagrams.ClassDiagram;
 
-namespace AutomatedCodeGeneration.DataLayer.Files.Abstractions
+namespace AutomatedCodeGeneration.DataLayer.Files.Abstractions;
+
+public interface IFileProperty
 {
-    public interface IFileProperty
-    {
-        List<ClassDataModel> FieldsAndProperties { get; }
-    }
+    List<ClassDataModel> FieldsAndProperties { get; }
 }
